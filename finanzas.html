@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Friofrias · Finanzas</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f5f3;color:#1a1a1a;font-size:14px}
+    .app{display:flex;flex-direction:column;min-height:100dvh}
+    .header{background:#fff;border-bottom:1px solid #e5e5e3;padding:10px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0;flex-wrap:wrap}
+    .logo{font-size:16px;font-weight:700}.logo span{color:#185FA5}
+    .nav{display:flex;gap:4px;margin-left:auto}
+    .nav a{font-size:12px;padding:5px 12px;border-radius:7px;border:1px solid #e0e0de;background:#fff;color:#555;text-decoration:none}
+    .nav a.active{background:#185FA5;border-color:#185FA5;color:#fff;font-weight:500}
+    .nav a:hover:not(.active){background:#f5f5f3}
+    .content{flex:1;padding:16px;max-width:900px;margin:0 auto;width:100%}
+    .fecha-bar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+    .fecha-bar label{font-size:12px;color:#888}
+    .fecha-bar select{font-size:13px;padding:5px 9px;border:1px solid #e0e0de;border-radius:7px;background:#fff;color:#1a1a1a;outline:none}
+    .fecha-bar input[type=date]{font-size:13px;padding:5px 9px;border:1px solid #e0e0de;border-radius:7px;background:#fff;color:#1a1a1a;outline:none}
+    .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px}
+    .stat{background:var(--bg,#f8f8f6);border-radius:10px;padding:12px 14px}
+    .stat-l{font-size:11px;color:#888;margin-bottom:4px}
+    .stat-n{font-size:22px;font-weight:600;color:var(--col,#1a1a1a)}
+    .main-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+    .card{background:#fff;border:0.5px solid #e5e5e3;border-radius:12px;padding:14px 16px}
+    .card h3{font-size:13px;font-weight:500;color:#888;margin-bottom:12px}
+    .form{display:flex;flex-direction:column;gap:8px}
+    .form input,.form select,.form textarea{width:100%;font-size:12px;padding:7px 9px;border:1px solid #e0e0de;border-radius:7px;background:#fff;color:#1a1a1a;outline:none;font-family:inherit}
+    .form input:focus,.form select:focus{border-color:#185FA5}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .btn-ing{font-size:12px;font-weight:500;padding:8px;border-radius:7px;border:none;background:#27ae60;color:#fff;cursor:pointer;width:100%}
+    .btn-ing:hover{background:#219a54}
+    .btn-gasto{font-size:12px;font-weight:500;padding:8px;border-radius:7px;border:none;background:#e24b4a;color:#fff;cursor:pointer;width:100%}
+    .btn-gasto:hover{background:#c0392b}
+    .movs{background:#fff;border:0.5px solid #e5e5e3;border-radius:12px;padding:14px 16px;margin-bottom:14px}
+    .movs h3{font-size:13px;font-weight:500;color:#888;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+    .mov{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid #f5f5f3}
+    .mov:last-child{border-bottom:none}
+    .mov-tipo{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .mov-body{flex:1}
+    .mov-desc{font-size:12px;font-weight:500}
+    .mov-meta{font-size:11px;color:#aaa;margin-top:1px}
+    .mov-monto{font-size:13px;font-weight:600}
+    .ing-col{color:#27ae60}
+    .gas-col{color:#e24b4a}
+    .empty{padding:16px;text-align:center;color:#aaa;font-size:12px}
+    .btn-del-m{background:none;border:none;cursor:pointer;font-size:13px;color:#ddd;padding:2px 5px}
+    .btn-del-m:hover{color:#e24b4a}
+    .chart-wrap{background:#fff;border:0.5px solid #e5e5e3;border-radius:12px;padding:14px 16px;margin-bottom:14px}
+    .chart-wrap h3{font-size:13px;font-weight:500;color:#888;margin-bottom:12px}
+    .forma-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:14px}
+    .forma-card{background:#fff;border:0.5px solid #e5e5e3;border-radius:10px;padding:10px 12px}
+    .forma-l{font-size:10px;color:#888;margin-bottom:3px}
+    .forma-n{font-size:16px;font-weight:600}
+    @media(max-width:600px){.main-grid{grid-template-columns:1fr}.nav a span{display:none}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="logo">Frio<span>frias</span></div>
+    <nav class="nav">
+      <a href="index.html">Logística</a>
+      <a href="finanzas.html" class="active">Finanzas</a>
+    </nav>
+  </div>
+  <div class="content">
+    <div class="fecha-bar">
+      <label>Periodo:</label>
+      <select id="filtro-periodo" onchange="cambiarPeriodo(this.value)">
+        <option value="hoy">Hoy</option>
+        <option value="semana">Esta semana</option>
+        <option value="mes" selected>Este mes</option>
+        <option value="custom">Rango personalizado</option>
+      </select>
+      <span id="custom-range" style="display:none;gap:6px;align-items:center">
+        <input type="date" id="fecha-desde" onchange="cargarMovimientos()"/>
+        <span style="font-size:12px;color:#888">hasta</span>
+        <input type="date" id="fecha-hasta" onchange="cargarMovimientos()"/>
+      </span>
+    </div>
+
+    <div class="stats">
+      <div class="stat" style="--bg:#E1F5EE;--col:#085041">
+        <div class="stat-l">Ingresos</div>
+        <div class="stat-n" id="stat-ing">$0</div>
+      </div>
+      <div class="stat" style="--bg:#FCEBEB;--col:#791F1F">
+        <div class="stat-l">Gastos</div>
+        <div class="stat-n" id="stat-gas">$0</div>
+      </div>
+      <div class="stat" style="--bg:#E6F1FB;--col:#0C447C">
+        <div class="stat-l">Resultado neto</div>
+        <div class="stat-n" id="stat-net">$0</div>
+      </div>
+      <div class="stat" style="--bg:#FAEEDA;--col:#633806">
+        <div class="stat-l">Movimientos</div>
+        <div class="stat-n" id="stat-cnt">0</div>
+      </div>
+    </div>
+
+    <div class="forma-grid" id="formas-grid"></div>
+
+    <div class="main-grid">
+      <div class="card">
+        <h3>Nuevo ingreso</h3>
+        <div class="form">
+          <input id="i-desc" type="text" placeholder="Descripción (ej: Venta 470L - Juan)"/>
+          <div class="row2">
+            <input id="i-monto" type="number" placeholder="Monto $"/>
+            <select id="i-forma">
+              <option value="efectivo">Efectivo</option>
+              <option value="transferencia">Transferencia</option>
+              <option value="tarjeta">Tarjeta</option>
+              <option value="cta_corriente">Cta corriente</option>
+            </select>
+          </div>
+          <div class="row2">
+            <select id="i-cat">
+              <option value="venta">Venta de heladera</option>
+              <option value="recambio">Recambio</option>
+              <option value="reparacion">Reparación cobrada</option>
+              <option value="otro_ing">Otro ingreso</option>
+            </select>
+            <input id="i-fecha" type="date"/>
+          </div>
+          <button class="btn-ing" onclick="agregarMovimiento('ingreso')">+ Registrar ingreso</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Nuevo gasto</h3>
+        <div class="form">
+          <input id="g-desc" type="text" placeholder="Descripción (ej: Combustible camioneta)"/>
+          <div class="row2">
+            <input id="g-monto" type="number" placeholder="Monto $"/>
+            <select id="g-forma">
+              <option value="efectivo">Efectivo</option>
+              <option value="transferencia">Transferencia</option>
+              <option value="tarjeta">Tarjeta</option>
+              <option value="cta_corriente">Cta corriente</option>
+            </select>
+          </div>
+          <div class="row2">
+            <select id="g-cat">
+              <option value="combustible">Combustible</option>
+              <option value="reparacion">Reparación de equipo</option>
+              <option value="sueldo">Sueldo</option>
+              <option value="proveedor">Proveedor</option>
+              <option value="alquiler">Alquiler</option>
+              <option value="impuesto">Impuesto / tasa</option>
+              <option value="otro_gasto">Otro gasto</option>
+            </select>
+            <input id="g-fecha" type="date"/>
+          </div>
+          <button class="btn-gasto" onclick="agregarMovimiento('gasto')">+ Registrar gasto</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-wrap">
+      <h3>Ingresos vs gastos por día</h3>
+      <canvas id="chart-diario" height="80"></canvas>
+    </div>
+
+    <div class="movs">
+      <h3>
+        <span>Últimos movimientos</span>
+        <span id="movs-count" style="font-size:11px;font-weight:400"></span>
+      </h3>
+      <div id="lista-movs"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const SUPA_URL="https://ecluhrcrbcybhfucbbst.supabase.co";
+const SUPA_KEY="sb_publishable_1MelpVpFmU-Sv-qaZbajhA_DJDF_UQc";
+async function sb(method,table,body,query=""){
+  const r=await fetch(`${SUPA_URL}/rest/v1/${table}${query}`,{method,headers:{"apikey":SUPA_KEY,"Authorization":`Bearer ${SUPA_KEY}`,"Content-Type":"application/json","Prefer":method==="POST"?"return=representation":"return=minimal"},body:body?JSON.stringify(body):undefined});
+  if(method==="GET"||method==="POST")return r.json();
+  return r;
+}
+
+const FORMAS=["efectivo","transferencia","tarjeta","cta_corriente"];
+const FORMAS_LABEL={"efectivo":"Efectivo","transferencia":"Transferencia","tarjeta":"Tarjeta","cta_corriente":"Cta corriente"};
+const FORMAS_COLOR={"efectivo":"#27ae60","transferencia":"#185FA5","tarjeta":"#8e44ad","cta_corriente":"#e67e22"};
+let chart=null;
+
+function hoyISO(){return new Date().toISOString().slice(0,10)}
+
+function getRango(){
+  const p=document.getElementById("filtro-periodo").value;
+  const hoy=hoyISO();
+  if(p==="hoy")return{desde:hoy,hasta:hoy};
+  if(p==="semana"){
+    const d=new Date();const dow=d.getDay();
+    const lunes=new Date(d);lunes.setDate(d.getDate()-(dow===0?6:dow-1));
+    const sab=new Date(lunes);sab.setDate(lunes.getDate()+5);
+    return{desde:lunes.toISOString().slice(0,10),hasta:sab.toISOString().slice(0,10)};
+  }
+  if(p==="mes"){
+    const d=new Date();
+    return{desde:new Date(d.getFullYear(),d.getMonth(),1).toISOString().slice(0,10),hasta:hoy};
+  }
+  return{desde:document.getElementById("fecha-desde").value||hoy,hasta:document.getElementById("fecha-hasta").value||hoy};
+}
+
+function cambiarPeriodo(v){
+  document.getElementById("custom-range").style.display=v==="custom"?"flex":"none";
+  cargarMovimientos();
+}
+
+function fmt(n){return "$"+Math.round(n).toLocaleString("es-AR")}
+
+async function cargarMovimientos(){
+  const{desde,hasta}=getRango();
+  const data=await sb("GET","movimientos",null,`?fecha=gte.${desde}&fecha=lte.${hasta}&order=fecha.desc,created_at.desc`);
+  if(!Array.isArray(data))return;
+  renderStats(data);
+  renderFormas(data);
+  renderChart(data,desde,hasta);
+  renderLista(data);
+}
+
+function renderStats(data){
+  const ing=data.filter(m=>m.tipo==="ingreso").reduce((s,m)=>s+parseFloat(m.monto),0);
+  const gas=data.filter(m=>m.tipo==="gasto").reduce((s,m)=>s+parseFloat(m.monto),0);
+  document.getElementById("stat-ing").textContent=fmt(ing);
+  document.getElementById("stat-gas").textContent=fmt(gas);
+  const net=ing-gas;
+  const el=document.getElementById("stat-net");
+  el.textContent=fmt(net);
+  el.style.color=net>=0?"#085041":"#791F1F";
+  document.getElementById("stat-cnt").textContent=data.length;
+}
+
+function renderFormas(data){
+  const grid=document.getElementById("formas-grid");
+  grid.innerHTML=FORMAS.map(f=>{
+    const ing=data.filter(m=>m.tipo==="ingreso"&&m.forma_pago===f).reduce((s,m)=>s+parseFloat(m.monto),0);
+    const gas=data.filter(m=>m.tipo==="gasto"&&m.forma_pago===f).reduce((s,m)=>s+parseFloat(m.monto),0);
+    const net=ing-gas;
+    return `<div class="forma-card">
+      <div class="forma-l">${FORMAS_LABEL[f]}</div>
+      <div class="forma-n" style="color:${net>=0?"#085041":"#791F1F"}">${fmt(net)}</div>
+      <div style="font-size:10px;color:#aaa;margin-top:2px">Ing: ${fmt(ing)} / Gas: ${fmt(gas)}</div>
+    </div>`;
+  }).join("");
+}
+
+function renderChart(data,desde,hasta){
+  const dias=[];
+  const d=new Date(desde);
+  while(d<=new Date(hasta)){dias.push(d.toISOString().slice(0,10));d.setDate(d.getDate()+1);}
+  const ings=dias.map(f=>data.filter(m=>m.tipo==="ingreso"&&m.fecha===f).reduce((s,m)=>s+parseFloat(m.monto),0));
+  const gass=dias.map(f=>data.filter(m=>m.tipo==="gasto"&&m.fecha===f).reduce((s,m)=>s+parseFloat(m.monto),0));
+  const labels=dias.map(f=>{const d=new Date(f+"T12:00:00");return d.getDate()+"/"+(d.getMonth()+1);});
+  if(chart)chart.destroy();
+  const ctx=document.getElementById("chart-diario").getContext("2d");
+  chart=new Chart(ctx,{
+    type:"bar",
+    data:{labels,datasets:[
+      {label:"Ingresos",data:ings,backgroundColor:"rgba(39,174,96,0.7)",borderRadius:4},
+      {label:"Gastos",data:gass,backgroundColor:"rgba(226,75,74,0.7)",borderRadius:4}
+    ]},
+    options:{responsive:true,plugins:{legend:{position:"bottom",labels:{font:{size:11},boxWidth:12}}},scales:{x:{ticks:{font:{size:10}}},y:{ticks:{font:{size:10},callback:v=>"$"+Math.round(v).toLocaleString("es-AR")}}}}
+  });
+}
+
+function renderLista(data){
+  const lista=document.getElementById("lista-movs");
+  document.getElementById("movs-count").textContent=data.length+" movimientos";
+  if(!data.length){lista.innerHTML='<div class="empty">Sin movimientos en este periodo</div>';return}
+  lista.innerHTML=data.map(m=>{
+    const ing=m.tipo==="ingreso";
+    const d=new Date(m.fecha+"T12:00:00");
+    const fechaStr=d.getDate()+"/"+(d.getMonth()+1)+"/"+(d.getFullYear()%100);
+    return `<div class="mov">
+      <div class="mov-tipo" style="background:${ing?"#27ae60":"#e24b4a"}"></div>
+      <div class="mov-body">
+        <div class="mov-desc">${m.descripcion}</div>
+        <div class="mov-meta">${m.categoria} · ${FORMAS_LABEL[m.forma_pago]||m.forma_pago} · ${fechaStr}</div>
+      </div>
+      <div class="mov-monto ${ing?"ing-col":"gas-col"}">${ing?"+":"-"}${fmt(m.monto)}</div>
+      <button class="btn-del-m" onclick="eliminarMov(${m.id})">×</button>
+    </div>`;
+  }).join("");
+}
+
+async function agregarMovimiento(tipo){
+  const pre=tipo==="ingreso"?"i":"g";
+  const desc=document.getElementById(pre+"-desc").value.trim();
+  const monto=parseFloat(document.getElementById(pre+"-monto").value);
+  const forma=document.getElementById(pre+"-forma").value;
+  const cat=document.getElementById(pre+"-cat").value;
+  const fecha=document.getElementById(pre+"-fecha").value||hoyISO();
+  if(!desc||!monto||monto<=0){document.getElementById(pre+"-desc").focus();return}
+  const ins=await sb("POST","movimientos",{tipo,descripcion:desc,monto,forma_pago:forma,categoria:cat,fecha});
+  if(Array.isArray(ins)&&ins[0]){
+    document.getElementById(pre+"-desc").value="";
+    document.getElementById(pre+"-monto").value="";
+    cargarMovimientos();
+  }
+}
+
+async function eliminarMov(id){
+  if(!confirm("Eliminar este movimiento?"))return;
+  await sb("DELETE","movimientos",null,"?id=eq."+id);
+  cargarMovimientos();
+}
+
+document.getElementById("i-fecha").value=hoyISO();
+document.getElementById("g-fecha").value=hoyISO();
+cargarMovimientos();
+setInterval(cargarMovimientos,60000);
+</script>
+</body>
+</html>

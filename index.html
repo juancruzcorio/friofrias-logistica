@@ -153,7 +153,7 @@
       </div>
       <div class="list" id="lista"></div>
       <div class="footer">
-        <button class="btn-ruta" onclick="generarRuta()">Generar ruta para fletero</button>
+        <button class="btn-ruta" onclick="generarRuta()">Generar ruta optimizada</button>
         <div class="footer-sub">
           <button class="btn-sm" onclick="abrirGoogleMaps()">Google Maps</button>
           <button class="btn-sm" onclick="abrirWaze()">Waze</button>
@@ -168,7 +168,7 @@
 </div>
 <div class="modal-bg" id="modal-bg" onclick="cerrarModalBg(event)">
   <div class="modal">
-    <h3 id="modal-titulo">Ruta generada</h3>
+    <h3 id="modal-titulo">Ruta optimizada</h3>
     <div class="modal-ruta" id="modal-texto"></div>
     <div class="modal-actions">
       <button class="btn-copy" onclick="copiarRuta()">Copiar texto</button>
@@ -261,21 +261,56 @@ async function geocodificar(dir){
   }catch(e){}
   return null;
 }
+function distKm(a,b){
+  const R=6371,dLat=(b.lat-a.lat)*Math.PI/180,dLng=(b.lng-a.lng)*Math.PI/180;
+  const x=Math.sin(dLat/2)**2+Math.cos(a.lat*Math.PI/180)*Math.cos(b.lat*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
+}
+function optimizarOrden(paradas){
+  const conCoords=paradas.filter(p=>p.lat&&p.lng);
+  const sinCoords=paradas.filter(p=>!p.lat||!p.lng);
+  if(conCoords.length<=1)return paradas;
+  const ORIGEN={lat:-34.745,lng:-58.401};
+  let entregas=[...conCoords.filter(p=>p.tipo==='entrega')];
+  let secundarios=[...conCoords.filter(p=>p.tipo!=='entrega')];
+  const rutaEntregas=[];
+  let actual=ORIGEN;
+  while(entregas.length>0){
+    let mejor=null,mejorDist=Infinity;
+    entregas.forEach(p=>{const d=distKm(actual,p);if(d<mejorDist){mejorDist=d;mejor=p;}});
+    rutaEntregas.push(mejor);actual=mejor;
+    entregas=entregas.filter(p=>p!==mejor);
+  }
+  const rutaFinal=[...rutaEntregas];
+  secundarios.forEach(sec=>{
+    let mejorPos=rutaFinal.length,mejorCosto=Infinity;
+    for(let i=0;i<=rutaFinal.length;i++){
+      const prev=i===0?ORIGEN:rutaFinal[i-1];
+      const next=i===rutaFinal.length?null:rutaFinal[i];
+      const dExtra=next?distKm(prev,sec)+distKm(sec,next)-distKm(prev,next):distKm(prev,sec);
+      if(dExtra*1.6<mejorCosto){mejorCosto=dExtra*1.6;mejorPos=i;}
+    }
+    rutaFinal.splice(mejorPos,0,sec);
+  });
+  return [...rutaFinal,...sinCoords];
+}
 function generarRuta(){
   const ruta=getRuta();if(!ruta)return;
   const activas=(ruta.paradas||[]).filter(p=>!p.done);
   if(!activas.length){alert('No hay paradas pendientes.');return}
+  const ordenadas=optimizarOrden(activas);
   const origen='Coronel+Diaz+43+Banfield';
-  const wps=activas.filter(p=>p.lat&&p.lng).map(p=>`${p.lat},${p.lng}`).join('|');
-  const dest=activas[activas.length-1];
+  const wps=ordenadas.filter(p=>p.lat&&p.lng).map(p=>`${p.lat},${p.lng}`).join('|');
+  const dest=ordenadas.filter(p=>p.lat&&p.lng).slice(-1)[0];
   const mapsLink=`https://www.google.com/maps/dir/?api=1&origin=${origen}&destination=${dest.lat},${dest.lng}&waypoints=${wps}&travelmode=driving`;
   const fecha=new Date(fechaActiva+'T12:00:00').toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'});
   let t=`🧊 *FRIOFRIAS · ${ruta.nombre.toUpperCase()}*\n`;
   t+=`📅 ${fecha}\n`;
   t+=`🗺 Link GPS: ${mapsLink}\n\n`;
   t+=`📍 *Salida: Coronel Díaz 43, Banfield*\n\n`;
-  activas.forEach((p,i)=>{
-    t+=`*${i+1}. ${p.nombre}*\n`;
+  ordenadas.forEach((p,i)=>{
+    const tipo=p.tipo==='entrega'?'Entrega':p.tipo==='reclamo'?'Reclamo':'Retiro';
+    t+=`*${i+1}. ${p.nombre}* [${tipo}]\n`;
     t+=`📌 ${p.direccion}\n`;
     if(p.turno)t+=`🕐 Turno ${p.turno}\n`;
     if(p.equipo_retira)t+=`⬆️ Retira: ${p.equipo_retira}\n`;
@@ -285,9 +320,10 @@ function generarRuta(){
     if(p.nota)t+=`📝 ${p.nota}\n`;
     t+='\n';
   });
-  if(activas.some(p=>p.equipo_retira))t+=`⚠️ *IMPORTANTE:* Hay recambios — dejar espacio en la camioneta.\n`;
+  if(ordenadas.some(p=>p.equipo_retira))t+=`⚠️ *IMPORTANTE:* Hay recambios — dejar espacio en la camioneta.\n`;
+  t+=`\n📊 *${ordenadas.length} paradas · Ruta optimizada automáticamente*`;
   rutaTexto=t;
-  document.getElementById('modal-titulo').textContent=`Ruta: ${ruta.nombre}`;
+  document.getElementById('modal-titulo').textContent=`Ruta optimizada: ${ruta.nombre}`;
   document.getElementById('modal-texto').textContent=t;
   document.getElementById('modal-bg').classList.add('open');
 }
@@ -297,10 +333,11 @@ function cerrarModal(){document.getElementById('modal-bg').classList.remove('ope
 function cerrarModalBg(e){if(e.target===document.getElementById('modal-bg'))cerrarModal()}
 function abrirGoogleMaps(){
   const ruta=getRuta();if(!ruta)return;
-  const a=(ruta.paradas||[]).filter(p=>!p.done&&p.lat&&p.lng);
-  if(!a.length){alert('Sin paradas con ubicación.');return}
-  const wps=a.map(p=>`${p.lat},${p.lng}`).join('|');
-  window.open(`https://www.google.com/maps/dir/?api=1&origin=Coronel+Diaz+43+Banfield&destination=${a[a.length-1].lat},${a[a.length-1].lng}&waypoints=${wps}&travelmode=driving`,'_blank');
+  const activas=(ruta.paradas||[]).filter(p=>!p.done);
+  const ordenadas=optimizarOrden(activas).filter(p=>p.lat&&p.lng);
+  if(!ordenadas.length){alert('Sin paradas con ubicación.');return}
+  const wps=ordenadas.map(p=>`${p.lat},${p.lng}`).join('|');
+  window.open(`https://www.google.com/maps/dir/?api=1&origin=Coronel+Diaz+43+Banfield&destination=${ordenadas.slice(-1)[0].lat},${ordenadas.slice(-1)[0].lng}&waypoints=${wps}&travelmode=driving`,'_blank');
 }
 function abrirWaze(){
   const ruta=getRuta();if(!ruta)return;
@@ -350,8 +387,7 @@ function renderSidebar(){
 }
 function renderPins(){
   Object.values(markers).forEach(m=>map.removeLayer(m));
-  markers={};
-  const allM=[];
+  markers={};const allM=[];
   rutas.forEach((ruta,ri)=>{
     const color=COLORES[ri%COLORES.length];
     (ruta.paradas||[]).filter(p=>!p.done&&p.lat&&p.lng).forEach((p,pi)=>{

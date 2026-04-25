@@ -63,8 +63,8 @@
     .parada-actions{position:absolute;top:7px;right:6px;display:flex;gap:3px}
     .btn-done{background:none;border:1px solid #e0e0de;border-radius:5px;cursor:pointer;font-size:11px;padding:2px 5px;color:#888}
     .btn-done:hover{background:#eafaf3;border-color:#2d9d6e;color:#2d9d6e}
-    .btn-del-p{background:none;border:none;cursor:pointer;font-size:14px;color:#ccc;padding:1px 3px}
-    .btn-del-p:hover{color:#e24b4a}
+    .btn-del-p{background:none;border:1px solid #e0e0de;border-radius:5px;cursor:pointer;font-size:11px;padding:2px 5px;color:#e24b4a;font-weight:600}
+    .btn-del-p:hover{background:#FCEBEB;border-color:#e24b4a}
     .empty{padding:20px;text-align:center;color:#aaa;font-size:12px}
     .footer{padding:8px 12px;border-top:1px solid #f0f0ee;display:flex;flex-direction:column;gap:6px;flex-shrink:0}
     .btn-ruta{font-size:12px;font-weight:500;padding:8px;border-radius:7px;border:none;background:#1a1a1a;color:#fff;cursor:pointer;width:100%}
@@ -109,7 +109,7 @@
     <div class="sidebar">
       <div class="route-header">
         <input class="route-name-input" id="ruta-nombre" type="text" placeholder="Nombre de la ruta" onblur="renombrarRuta(this.value)"/>
-        <button class="btn-del-ruta" onclick="eliminarRuta()">×</button>
+        <button class="btn-del-ruta" onclick="eliminarRuta()">× Eliminar ruta</button>
       </div>
       <div class="stats">
         <div class="stat"><div class="stat-n ne" id="cnt-e">0</div><div class="stat-l">Entregas</div></div>
@@ -158,6 +158,7 @@
           <button class="btn-sm" onclick="abrirGoogleMaps()">Google Maps</button>
           <button class="btn-sm" onclick="abrirWaze()">Waze</button>
         </div>
+        <button class="btn-sm" style="width:100%;margin-top:2px;color:#185FA5;border-color:#185FA5" onclick="abrirTodos()">Ver todos los pedidos pendientes</button>
       </div>
     </div>
     <div class="map-wrap">
@@ -174,6 +175,15 @@
       <button class="btn-copy" onclick="copiarRuta()">Copiar texto</button>
       <button class="btn-wapp" onclick="enviarWhatsapp()">WhatsApp</button>
       <button class="btn-close-modal" onclick="cerrarModal()">Cerrar</button>
+    </div>
+  </div>
+</div>
+<div class="modal-bg" id="modal-todos" onclick="cerrarTodosBg(event)">
+  <div class="modal" style="max-width:600px">
+    <h3>Todos los pedidos pendientes</h3>
+    <div id="todos-contenido" style="margin-top:12px;max-height:60vh;overflow-y:auto"></div>
+    <div class="modal-actions">
+      <button class="btn-close-modal" style="width:100%" onclick="cerrarTodos()">Cerrar</button>
     </div>
   </div>
 </div>
@@ -195,9 +205,7 @@ async function init(){
   document.getElementById('fecha-input').value=fechaActiva;
   map=L.map('map').setView([-34.62,-58.44],11);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:19}).addTo(map);
-  await cargarTodo();
-  setStatus('Listo',2000);
-  setInterval(cargarTodo,30000);
+  await cargarTodo();setStatus('Listo',2000);setInterval(cargarTodo,30000);
 }
 async function cargarTodo(){
   try{
@@ -205,8 +213,7 @@ async function cargarTodo(){
     if(!Array.isArray(rDB))return;
     rutas=rDB.map(r=>({...r,paradas:(Array.isArray(pDB)?pDB:[]).filter(p=>p.ruta_id===r.id)}));
     if(rutas.length===0){const r=await sb('POST','rutas',{nombre:'Camioneta 1 · Mañana',fecha:fechaActiva});if(Array.isArray(r)&&r[0])rutas=[{...r[0],paradas:[]}];}
-    if(rutaIdx>=rutas.length)rutaIdx=0;
-    render();
+    if(rutaIdx>=rutas.length)rutaIdx=0;render();
   }catch(e){setStatus('Sin conexión')}
 }
 async function nuevaRuta(){
@@ -233,8 +240,7 @@ async function agregarParada(){
   const dir=document.getElementById('f-dir').value.trim();
   if(!nombre||!dir){document.getElementById('f-nombre').focus();return}
   const btn=document.getElementById('btn-agregar');
-  btn.disabled=true;btn.textContent='Buscando...';
-  setStatus('Geocodificando dirección...');
+  btn.disabled=true;btn.textContent='Buscando...';setStatus('Geocodificando dirección...');
   const geo=await geocodificar(dir);
   if(!geo){setStatus('No encontré esa dirección. Probá más detalle.',4000);btn.disabled=false;btn.textContent='+ Agregar parada';return}
   const row={ruta_id:ruta.id,fecha:fechaActiva,nombre,direccion:dir,tipo:document.getElementById('f-tipo').value,turno:document.getElementById('f-turno').value,telefono:document.getElementById('f-tel').value.trim(),equipo_entrega:document.getElementById('f-entrega').value,equipo_retira:document.getElementById('f-retira').value,cobro:document.getElementById('f-cobro').value.trim(),nota:document.getElementById('f-nota').value.trim(),lat:geo.lat,lng:geo.lng,done:false,orden:(ruta.paradas||[]).length};
@@ -248,6 +254,7 @@ async function marcarDone(rid,pid){
   if(p){p.done=true;await sb('PATCH','paradas',{done:true},`?id=eq.${pid}`);render()}
 }
 async function eliminarParada(rid,pid){
+  if(!confirm('¿Eliminar esta parada?'))return;
   const ruta=rutas.find(r=>r.id===rid);if(!ruta)return;
   ruta.paradas=ruta.paradas.filter(p=>p.id!==pid);
   await sb('DELETE','paradas',null,`?id=eq.${pid}`);render();
@@ -273,13 +280,11 @@ function optimizarOrden(paradas){
   const ORIGEN={lat:-34.745,lng:-58.401};
   let entregas=[...conCoords.filter(p=>p.tipo==='entrega')];
   let secundarios=[...conCoords.filter(p=>p.tipo!=='entrega')];
-  const rutaEntregas=[];
-  let actual=ORIGEN;
+  const rutaEntregas=[];let actual=ORIGEN;
   while(entregas.length>0){
     let mejor=null,mejorDist=Infinity;
     entregas.forEach(p=>{const d=distKm(actual,p);if(d<mejorDist){mejorDist=d;mejor=p;}});
-    rutaEntregas.push(mejor);actual=mejor;
-    entregas=entregas.filter(p=>p!==mejor);
+    rutaEntregas.push(mejor);actual=mejor;entregas=entregas.filter(p=>p!==mejor);
   }
   const rutaFinal=[...rutaEntregas];
   secundarios.forEach(sec=>{
@@ -329,6 +334,63 @@ function generarRuta(){
 }
 function copiarRuta(){navigator.clipboard.writeText(rutaTexto).then(()=>alert('¡Copiado! Pegalo en WhatsApp.'))}
 function enviarWhatsapp(){window.open(`https://wa.me/?text=${encodeURIComponent(rutaTexto)}`,'_blank')}
+async function abrirTodos(){
+  const hoy=new Date(),dow=hoy.getDay(),lunes=new Date(hoy);
+  lunes.setDate(hoy.getDate()-(dow===0?6:dow-1));
+  const fechas=Array.from({length:6},(_,i)=>{const d=new Date(lunes);d.setDate(lunes.getDate()+i);return d.toISOString().slice(0,10);});
+  const DIAS=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  setStatus('Cargando todos los pedidos...');
+  try{
+    const [rDB,pDB]=await Promise.all([sb('GET','rutas',null,'?order=fecha.asc,created_at.asc'),sb('GET','paradas',null,'?done=eq.false&order=fecha.asc,created_at.asc')]);
+    if(!Array.isArray(rDB)||!Array.isArray(pDB)){setStatus('Error',3000);return;}
+    const sf=new Set(fechas);
+    const rutasSemana=rDB.filter(r=>sf.has(r.fecha));
+    const paradasPendientes=pDB.filter(p=>sf.has(p.fecha));
+    let html='',total=0;
+    fechas.forEach(fecha=>{
+      const rutasDelDia=rutasSemana.filter(r=>r.fecha===fecha);
+      const paradasDelDia=paradasPendientes.filter(p=>p.fecha===fecha);
+      if(!paradasDelDia.length)return;
+      total+=paradasDelDia.length;
+      const d=new Date(fecha+'T12:00:00');
+      const esHoy=fecha===hoyISO();
+      html+='<div style="margin-bottom:16px">';
+      html+='<div style="font-size:12px;font-weight:600;color:#185FA5;padding:6px 0;border-bottom:1px solid #e5e5e3;margin-bottom:8px">';
+      html+=DIAS[d.getDay()]+' '+d.getDate()+'/'+(d.getMonth()+1)+(esHoy?' · HOY':'');
+      html+=' <span style="color:#888;font-weight:400">('+paradasDelDia.length+' pendientes)</span></div>';
+      rutasDelDia.forEach(ruta=>{
+        const pRuta=paradasDelDia.filter(p=>p.ruta_id===ruta.id);
+        if(!pRuta.length)return;
+        html+='<div style="font-size:11px;color:#888;margin-bottom:4px;font-weight:500">'+ruta.nombre+'</div>';
+        pRuta.forEach(p=>{
+          const tipo=p.tipo==='entrega'?'Entrega':p.tipo==='reclamo'?'Reclamo':'Retiro';
+          const color=p.tipo==='entrega'?'#0C447C':p.tipo==='reclamo'?'#791F1F':'#633806';
+          const bg=p.tipo==='entrega'?'#E6F1FB':p.tipo==='reclamo'?'#FCEBEB':'#FAEEDA';
+          html+='<div style="background:#f8f8f6;border-radius:7px;padding:8px 10px;margin-bottom:4px;cursor:pointer" onclick="irAFecha(\''+fecha+'\')">';
+          html+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">';
+          html+='<span style="font-size:10px;font-weight:500;padding:2px 6px;border-radius:20px;background:'+bg+';color:'+color+'">'+tipo+'</span>';
+          html+='<span style="font-size:12px;font-weight:500">'+p.nombre+'</span></div>';
+          html+='<div style="font-size:11px;color:#888">'+p.direccion+'</div>';
+          html+='<div style="font-size:11px;color:#aaa;margin-top:2px;display:flex;gap:6px;flex-wrap:wrap">';
+          if(p.turno)html+='<span>🕐 '+p.turno+'</span>';
+          if(p.equipo_entrega)html+='<span>⬇️ '+p.equipo_entrega+'</span>';
+          if(p.equipo_retira)html+='<span>⬆️ '+p.equipo_retira+'</span>';
+          if(p.cobro)html+='<span style="color:#854F0B">💰 '+p.cobro+'</span>';
+          if(p.telefono)html+='<span>📞 '+p.telefono+'</span>';
+          html+='</div></div>';
+        });
+      });
+      html+='</div>';
+    });
+    if(!total)html='<div style="text-align:center;color:#aaa;padding:24px">No hay pedidos pendientes esta semana</div>';
+    document.getElementById('todos-contenido').innerHTML=html;
+    document.getElementById('modal-todos').classList.add('open');
+    setStatus('Listo',1000);
+  }catch(e){setStatus('Error cargando pedidos',3000);}
+}
+function irAFecha(fecha){cerrarTodos();fechaActiva=fecha;document.getElementById('fecha-input').value=fecha;rutaIdx=0;rutas=[];cargarTodo();}
+function cerrarTodos(){document.getElementById('modal-todos').classList.remove('open')}
+function cerrarTodosBg(e){if(e.target===document.getElementById('modal-todos'))cerrarTodos()}
 function cerrarModal(){document.getElementById('modal-bg').classList.remove('open')}
 function cerrarModalBg(e){if(e.target===document.getElementById('modal-bg'))cerrarModal()}
 function abrirGoogleMaps(){
@@ -366,8 +428,8 @@ function renderSidebar(){
     const tipo=p.tipo==='entrega'?'Entrega':p.tipo==='reclamo'?'Reclamo':'Retiro';
     return `<div class="parada${p.done?' done':''}">
       <div class="parada-actions">
-        ${!p.done?`<button class="btn-done" onclick="marcarDone(${ruta.id},${p.id})">✓</button>`:'<span style="font-size:11px;color:#2d9d6e;padding:2px 4px">✓</span>'}
-        <button class="btn-del-p" onclick="eliminarParada(${ruta.id},${p.id})">×</button>
+        ${!p.done?`<button class="btn-done" onclick="marcarDone(${ruta.id},${p.id})">✓ Entregado</button>`:'<span style="font-size:11px;color:#2d9d6e;padding:2px 6px;background:#eafaf3;border-radius:5px">✓ Entregado</span>'}
+        <button class="btn-del-p" onclick="eliminarParada(${ruta.id},${p.id})">× Borrar</button>
       </div>
       <div class="parada-top">
         <div class="parada-num">${i+1}</div>

@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f3;color:#1a1a1a;font-size:14px}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f5f3;color:#1a1a1a;font-size:14px}
     .app{display:flex;flex-direction:column;height:100dvh}
     .header{background:#fff;border-bottom:1px solid #e5e5e3;padding:10px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0;flex-wrap:wrap}
     .logo{font-size:16px;font-weight:700;flex-shrink:0}.logo span{color:#185FA5}
@@ -16,41 +16,41 @@
     .date-pick input[type=date]{font-size:13px;padding:5px 8px;border:1px solid #e0e0de;border-radius:7px;background:#fff;color:#1a1a1a;outline:none}
     .date-pick input[type=date]:focus{border-color:#185FA5}
     .btn-hoy{font-size:11px;padding:4px 9px;border-radius:6px;border:1px solid #e0e0de;background:#fff;cursor:pointer;color:#555}
-    .btn-hoy:hover{background:#f0f0ee}
     .route-bar{background:#fff;border-bottom:1px solid #e5e5e3;padding:0 12px;display:flex;align-items:center;flex-shrink:0;overflow-x:auto}
     .route-tabs-inner{display:flex;align-items:center}
     .route-tab{padding:10px 14px;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;color:#888;white-space:nowrap;transition:all .15s}
-    .route-tab:hover{color:#333}
     .route-tab.active{color:#185FA5;border-bottom-color:#185FA5;font-weight:500}
     .route-tab .cnt{display:inline-block;background:#e8f0fb;color:#185FA5;font-size:10px;font-weight:600;padding:1px 5px;border-radius:10px;margin-left:4px}
-    .btn-nueva-ruta{margin-left:8px;flex-shrink:0;font-size:12px;padding:5px 10px;border-radius:7px;border:1px dashed #bbb;background:none;cursor:pointer;color:#888;white-space:nowrap}
+    .btn-nueva-ruta{margin-left:8px;flex-shrink:0;font-size:12px;padding:5px 10px;border-radius:7px;border:1px dashed #bbb;background:none;cursor:pointer;color:#888}
     .btn-nueva-ruta:hover{border-color:#185FA5;color:#185FA5}
     .main{display:flex;flex:1;overflow:hidden}
     .sidebar{width:320px;flex-shrink:0;background:#fff;border-right:1px solid #e5e5e3;display:flex;flex-direction:column;overflow:hidden}
     .route-header{padding:8px 12px;border-bottom:1px solid #f0f0ee;display:flex;align-items:center;gap:6px}
     .route-name-input{flex:1;font-size:13px;font-weight:500;padding:5px 8px;border:1px solid #e0e0de;border-radius:7px;background:#fff;color:#1a1a1a;outline:none}
-    .route-name-input:focus{border-color:#185FA5}
-    .btn-del-ruta{background:none;border:none;cursor:pointer;font-size:16px;color:#ccc;padding:2px 5px}
-    .btn-del-ruta:hover{color:#e24b4a}
+    .btn-del-ruta{background:none;border:1px solid #e0e0de;cursor:pointer;font-size:12px;color:#e24b4a;padding:4px 8px;border-radius:6px;white-space:nowrap}
+    .cap-bar{padding:7px 12px;border-bottom:1px solid #f0f0ee;display:flex;align-items:center;gap:8px;background:#f8f8f6}
+    .cap-bar label{font-size:11px;color:#888;flex-shrink:0}
+    .cap-bar select{font-size:12px;padding:4px 7px;border:1px solid #e0e0de;border-radius:6px;background:#fff;color:#1a1a1a;outline:none}
+    .cap-bar .cap-info{font-size:11px;margin-left:auto}
+    .cap-ok{color:#2d9d6e;font-weight:500}
+    .cap-over{color:#e24b4a;font-weight:500}
     .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;padding:8px 12px;border-bottom:1px solid #f0f0ee}
     .stat{background:#f8f8f6;border-radius:7px;padding:6px;text-align:center}
     .stat-n{font-size:18px;font-weight:600}.stat-l{font-size:10px;color:#888;margin-top:1px}
     .ne{color:#185FA5}.nr{color:#A32D2D}.nt{color:#854F0B}
-    .form{padding:10px 12px;border-bottom:1px solid #f0f0ee;display:flex;flex-direction:column;gap:6px;overflow-y:auto;max-height:330px}
+    .form{padding:10px 12px;border-bottom:1px solid #f0f0ee;display:flex;flex-direction:column;gap:6px;overflow-y:auto;max-height:310px}
     .form input,.form select,.form textarea{width:100%;font-size:12px;padding:6px 8px;border:1px solid #e0e0de;border-radius:7px;background:#fff;color:#1a1a1a;outline:none;font-family:inherit}
     .form input:focus,.form select:focus,.form textarea:focus{border-color:#185FA5}
-    .form textarea{resize:none;height:42px}
+    .form textarea{resize:none;height:40px}
     .row2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
     .form-label{font-size:10px;color:#888;margin-bottom:1px}
     .form-group{display:flex;flex-direction:column;gap:2px}
     .btn-add{font-size:12px;font-weight:500;padding:8px;border-radius:7px;border:none;background:#185FA5;color:#fff;cursor:pointer}
-    .btn-add:hover{background:#0C447C}
     .btn-add:disabled{background:#aaa;cursor:not-allowed}
     .list{flex:1;overflow-y:auto;padding:6px 8px}
-    .parada{background:#fff;border:1px solid #e5e5e3;border-radius:8px;padding:9px 10px;margin-bottom:5px;position:relative;transition:border-color .15s}
-    .parada:hover{border-color:#bbb}
+    .parada{background:#fff;border:1px solid #e5e5e3;border-radius:8px;padding:9px 10px;margin-bottom:5px}
     .parada.done{opacity:.4}
-    .parada-top{display:flex;align-items:center;gap:6px;margin-bottom:3px;padding-right:52px}
+    .parada-top{display:flex;align-items:center;gap:6px;margin-bottom:3px}
     .parada-num{width:20px;height:20px;border-radius:50%;background:#185FA5;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
     .badge{font-size:10px;font-weight:500;padding:2px 6px;border-radius:20px;flex-shrink:0}
     .badge.entrega{background:#E6F1FB;color:#0C447C}
@@ -60,10 +60,10 @@
     .parada-dir{font-size:11px;color:#888;margin-top:1px}
     .parada-det{font-size:11px;color:#aaa;margin-top:2px;display:flex;flex-wrap:wrap;gap:4px}
     .parada-det span{background:#f5f5f3;padding:1px 5px;border-radius:4px}
-    .parada-actions{position:absolute;top:7px;right:6px;display:flex;gap:3px}
-    .btn-done{background:none;border:1px solid #e0e0de;border-radius:5px;cursor:pointer;font-size:11px;padding:2px 5px;color:#888}
-    .btn-done:hover{background:#eafaf3;border-color:#2d9d6e;color:#2d9d6e}
-    .btn-del-p{background:none;border:1px solid #e0e0de;border-radius:5px;cursor:pointer;font-size:11px;padding:2px 5px;color:#e24b4a;font-weight:600}
+    .parada-btns{display:flex;gap:5px;margin-top:6px}
+    .btn-done{flex:1;background:none;border:1px solid #e0e0de;border-radius:5px;cursor:pointer;font-size:11px;padding:4px 6px;color:#2d9d6e}
+    .btn-done:hover{background:#eafaf3;border-color:#2d9d6e}
+    .btn-del-p{flex:1;background:none;border:1px solid #fcc;border-radius:5px;cursor:pointer;font-size:11px;padding:4px 6px;color:#e24b4a;font-weight:500}
     .btn-del-p:hover{background:#FCEBEB;border-color:#e24b4a}
     .empty{padding:20px;text-align:center;color:#aaa;font-size:12px}
     .footer{padding:8px 12px;border-top:1px solid #f0f0ee;display:flex;flex-direction:column;gap:6px;flex-shrink:0}
@@ -72,9 +72,15 @@
     .footer-sub{display:flex;gap:6px}
     .btn-sm{flex:1;font-size:11px;padding:6px 8px;border-radius:7px;border:1px solid #e0e0de;background:#fff;cursor:pointer;color:#555}
     .btn-sm:hover{background:#f5f5f3}
+    .btn-todos{width:100%;font-size:11px;padding:7px;border-radius:7px;border:1px solid #185FA5;background:#fff;cursor:pointer;color:#185FA5;font-weight:500;margin-top:2px}
+    .btn-todos.active{background:#185FA5;color:#fff}
     .map-wrap{flex:1;position:relative}
     #map{width:100%;height:100%}
     .status-bar{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,.95);border:1px solid #e0e0de;border-radius:20px;padding:5px 14px;font-size:12px;color:#555;z-index:1000;pointer-events:none;transition:opacity .3s;white-space:nowrap}
+    .map-legend{position:absolute;bottom:24px;right:10px;background:rgba(255,255,255,.95);border:1px solid #e0e0de;border-radius:8px;padding:8px 12px;font-size:11px;z-index:1000;display:none}
+    .map-legend.show{display:block}
+    .leg-row{display:flex;align-items:center;gap:6px;margin-bottom:3px;color:#555}
+    .leg-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
     .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:2000;align-items:center;justify-content:center}
     .modal-bg.open{display:flex}
     .modal{background:#fff;border-radius:12px;padding:20px;width:92%;max-width:520px;max-height:88vh;overflow-y:auto}
@@ -86,8 +92,8 @@
     .btn-close-modal{padding:9px 16px;border-radius:7px;border:1px solid #e0e0de;background:#fff;font-size:13px;cursor:pointer;color:#555}
     @media(max-width:700px){
       .main{flex-direction:column}
-      .sidebar{width:100%;max-height:58vh;border-right:none;border-bottom:1px solid #e5e5e3}
-      .map-wrap{min-height:42vh}
+      .sidebar{width:100%;max-height:62vh;border-right:none;border-bottom:1px solid #e5e5e3}
+      .map-wrap{min-height:38vh}
     }
   </style>
 </head>
@@ -109,7 +115,19 @@
     <div class="sidebar">
       <div class="route-header">
         <input class="route-name-input" id="ruta-nombre" type="text" placeholder="Nombre de la ruta" onblur="renombrarRuta(this.value)"/>
-        <button class="btn-del-ruta" onclick="eliminarRuta()">× Eliminar ruta</button>
+        <button class="btn-del-ruta" onclick="eliminarRuta()">× Eliminar</button>
+      </div>
+      <div class="cap-bar">
+        <label>Capacidad:</label>
+        <select id="ruta-cap" onchange="cambiarCapacidad(parseInt(this.value))">
+          <option value="1">1 heladera</option>
+          <option value="2">2 heladeras</option>
+          <option value="3">3 heladeras</option>
+          <option value="4">4 heladeras</option>
+          <option value="5">5 heladeras</option>
+          <option value="6" selected>6 heladeras</option>
+        </select>
+        <span class="cap-info" id="cap-info"></span>
       </div>
       <div class="stats">
         <div class="stat"><div class="stat-n ne" id="cnt-e">0</div><div class="stat-l">Entregas</div></div>
@@ -122,16 +140,16 @@
             <select id="f-tipo"><option value="entrega">Entrega</option><option value="reclamo">Reclamo</option><option value="retiro">Retiro</option></select>
           </div>
           <div class="form-group"><div class="form-label">Turno</div>
-            <select id="f-turno"><option value="mañana">Mañana</option><option value="tarde">Tarde</option><option value="todo el día">Todo el día</option></select>
+            <select id="f-turno"><option value="manana">Manana</option><option value="tarde">Tarde</option><option value="todo el dia">Todo el dia</option></select>
           </div>
         </div>
         <div class="form-group"><div class="form-label">Cliente</div><input id="f-nombre" type="text" placeholder="Nombre del cliente"/></div>
-        <div class="form-group"><div class="form-label">Dirección</div><input id="f-dir" type="text" placeholder="Av. Corrientes 2500, CABA"/></div>
-        <div class="form-group"><div class="form-label">Teléfono</div><input id="f-tel" type="text" placeholder="11 1234-5678"/></div>
+        <div class="form-group"><div class="form-label">Direccion</div><input id="f-dir" type="text" placeholder="Av. Corrientes 2500, CABA"/></div>
+        <div class="form-group"><div class="form-label">Telefono</div><input id="f-tel" type="text" placeholder="11 1234-5678"/></div>
         <div class="row2">
           <div class="form-group"><div class="form-label">Entrega</div>
             <select id="f-entrega">
-              <option value="">— ninguno —</option>
+              <option value="">ninguno</option>
               <option value="390L">390L</option><option value="390L black">390L black</option>
               <option value="470L">470L</option><option value="470L black">470L black</option>
               <option value="600L">600L</option><option value="600L black">600L black</option>
@@ -140,7 +158,7 @@
           </div>
           <div class="form-group"><div class="form-label">Retira</div>
             <select id="f-retira">
-              <option value="">— ninguno —</option>
+              <option value="">ninguno</option>
               <option value="390L">390L</option><option value="390L Coca">390L Coca</option><option value="390L black">390L black</option>
               <option value="470L">470L</option><option value="470L Coca">470L Coca</option><option value="470L black">470L black</option>
               <option value="600L">600L</option><option value="1500L">1500L</option>
@@ -158,12 +176,13 @@
           <button class="btn-sm" onclick="abrirGoogleMaps()">Google Maps</button>
           <button class="btn-sm" onclick="abrirWaze()">Waze</button>
         </div>
-        <button class="btn-sm" style="width:100%;margin-top:2px;color:#185FA5;border-color:#185FA5" onclick="abrirTodos()">Ver todos los pedidos pendientes</button>
+        <button class="btn-todos" id="btn-todos" onclick="toggleTodos()">Ver todos los pedidos en el mapa</button>
       </div>
     </div>
     <div class="map-wrap">
       <div class="status-bar" id="status-bar">Cargando mapa...</div>
       <div id="map"></div>
+      <div class="map-legend" id="map-legend"></div>
     </div>
   </div>
 </div>
@@ -178,91 +197,97 @@
     </div>
   </div>
 </div>
-<div class="modal-bg" id="modal-todos" onclick="cerrarTodosBg(event)">
-  <div class="modal" style="max-width:600px">
-    <h3>Todos los pedidos pendientes</h3>
-    <div id="todos-contenido" style="margin-top:12px;max-height:60vh;overflow-y:auto"></div>
-    <div class="modal-actions">
-      <button class="btn-close-modal" style="width:100%" onclick="cerrarTodos()">Cerrar</button>
-    </div>
-  </div>
-</div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-const SUPA_URL='https://ecluhrcrbcybhfucbbst.supabase.co';
-const SUPA_KEY='sb_publishable_1MelpVpFmU-Sv-qaZbajhA_DJDF_UQc';
-async function sb(method,table,body,query=''){
-  const r=await fetch(`${SUPA_URL}/rest/v1/${table}${query}`,{method,headers:{'apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`,'Content-Type':'application/json','Prefer':method==='POST'?'return=representation':'return=minimal'},body:body?JSON.stringify(body):undefined});
-  if(method==='GET'||method==='POST')return r.json();
+const SUPA_URL="https://ecluhrcrbcybhfucbbst.supabase.co";
+const SUPA_KEY="sb_publishable_1MelpVpFmU-Sv-qaZbajhA_DJDF_UQc";
+async function sb(method,table,body,query=""){
+  const r=await fetch(`${SUPA_URL}/rest/v1/${table}${query}`,{method,headers:{"apikey":SUPA_KEY,"Authorization":`Bearer ${SUPA_KEY}`,"Content-Type":"application/json","Prefer":method==="POST"?"return=representation":"return=minimal"},body:body?JSON.stringify(body):undefined});
+  if(method==="GET"||method==="POST")return r.json();
   return r;
 }
-let fechaActiva=hoyISO(),rutas=[],rutaIdx=0,map,markers={},rutaTexto='';
-const COLORES=['#185FA5','#A32D2D','#854F0B','#2d7d46'];
-const RNOMBRES=['Camioneta 1 · Mañana','Camioneta 1 · Tarde','Camioneta 2 · Mañana','Camioneta 2 · Tarde'];
+let fechaActiva=hoyISO(),rutas=[],rutaIdx=0,map,markers={},rutaTexto="",modoTodos=false;
+const CR=["#185FA5","#A32D2D","#854F0B","#2d7d46"];
+const CF=["#185FA5","#c0392b","#e67e22","#27ae60","#8e44ad","#7f8c8d"];
+const RN=["Camioneta 1 Manana","Camioneta 1 Tarde","Camioneta 2 Manana","Camioneta 2 Tarde"];
+const DI=["Dom","Lun","Mar","Mie","Jue","Vie","Sab"];
 function hoyISO(){return new Date().toISOString().slice(0,10)}
 function getRuta(){return rutas[rutaIdx]||null}
+function getCap(){const r=getRuta();return r?parseInt(r.capacidad||6):6}
 async function init(){
-  document.getElementById('fecha-input').value=fechaActiva;
-  map=L.map('map').setView([-34.62,-58.44],11);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:19}).addTo(map);
-  await cargarTodo();setStatus('Listo',2000);setInterval(cargarTodo,30000);
+  document.getElementById("fecha-input").value=fechaActiva;
+  map=L.map("map").setView([-34.62,-58.44],11);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"OpenStreetMap",maxZoom:19}).addTo(map);
+  await cargarTodo();setStatus("Listo",2000);setInterval(cargarTodo,30000);
 }
 async function cargarTodo(){
   try{
-    const [rDB,pDB]=await Promise.all([sb('GET','rutas',null,`?fecha=eq.${fechaActiva}&order=created_at.asc`),sb('GET','paradas',null,`?fecha=eq.${fechaActiva}&order=orden.asc,created_at.asc`)]);
+    const [rDB,pDB]=await Promise.all([sb("GET","rutas",null,`?fecha=eq.${fechaActiva}&order=created_at.asc`),sb("GET","paradas",null,`?fecha=eq.${fechaActiva}&order=orden.asc,created_at.asc`)]);
     if(!Array.isArray(rDB))return;
     rutas=rDB.map(r=>({...r,paradas:(Array.isArray(pDB)?pDB:[]).filter(p=>p.ruta_id===r.id)}));
-    if(rutas.length===0){const r=await sb('POST','rutas',{nombre:'Camioneta 1 · Mañana',fecha:fechaActiva});if(Array.isArray(r)&&r[0])rutas=[{...r[0],paradas:[]}];}
-    if(rutaIdx>=rutas.length)rutaIdx=0;render();
-  }catch(e){setStatus('Sin conexión')}
+    if(rutas.length===0){const r=await sb("POST","rutas",{nombre:"Camioneta 1 Manana",fecha:fechaActiva,capacidad:6});if(Array.isArray(r)&&r[0])rutas=[{...r[0],paradas:[]}];}
+    if(rutaIdx>=rutas.length)rutaIdx=0;
+    if(modoTodos)await renderTodosMapa();else render();
+  }catch(e){setStatus("Sin conexion")}
 }
 async function nuevaRuta(){
-  if(rutas.length>=4){alert('Máximo 4 rutas por día');return}
-  const nombre=RNOMBRES[rutas.length]||`Ruta ${rutas.length+1}`;
-  const r=await sb('POST','rutas',{nombre,fecha:fechaActiva});
+  if(rutas.length>=4){alert("Maximo 4 rutas por dia");return}
+  const nombre=RN[rutas.length]||"Ruta "+(rutas.length+1);
+  const r=await sb("POST","rutas",{nombre,fecha:fechaActiva,capacidad:6});
   if(Array.isArray(r)&&r[0]){rutas.push({...r[0],paradas:[]});rutaIdx=rutas.length-1;render()}
 }
 async function eliminarRuta(){
   const ruta=getRuta();if(!ruta)return;
-  if(rutas.length===1){alert('Debe haber al menos una ruta');return}
-  if(!confirm(`¿Eliminar "${ruta.nombre}" y todas sus paradas?`))return;
-  await sb('DELETE','paradas',null,`?ruta_id=eq.${ruta.id}`);
-  await sb('DELETE','rutas',null,`?id=eq.${ruta.id}`);
+  if(rutas.length===1){alert("Debe haber al menos una ruta");return}
+  if(!confirm("Eliminar "+ruta.nombre+" y todas sus paradas?"))return;
+  await sb("DELETE","paradas",null,"?ruta_id=eq."+ruta.id);
+  await sb("DELETE","rutas",null,"?id=eq."+ruta.id);
   rutas.splice(rutaIdx,1);rutaIdx=Math.max(0,rutaIdx-1);render();
 }
 async function renombrarRuta(nombre){
   const ruta=getRuta();if(!ruta||!nombre.trim())return;
-  ruta.nombre=nombre;await sb('PATCH','rutas',{nombre},`?id=eq.${ruta.id}`);buildTabs();
+  ruta.nombre=nombre;await sb("PATCH","rutas",{nombre},"?id=eq."+ruta.id);buildTabs();
+}
+async function cambiarCapacidad(cap){
+  const ruta=getRuta();if(!ruta)return;
+  ruta.capacidad=cap;await sb("PATCH","rutas",{capacidad:cap},"?id=eq."+ruta.id);renderCapInfo();renderPins();
 }
 async function agregarParada(){
   const ruta=getRuta();if(!ruta)return;
-  const nombre=document.getElementById('f-nombre').value.trim();
-  const dir=document.getElementById('f-dir').value.trim();
-  if(!nombre||!dir){document.getElementById('f-nombre').focus();return}
-  const btn=document.getElementById('btn-agregar');
-  btn.disabled=true;btn.textContent='Buscando...';setStatus('Geocodificando dirección...');
+  const nombre=document.getElementById("f-nombre").value.trim();
+  const dir=document.getElementById("f-dir").value.trim();
+  if(!nombre||!dir){document.getElementById("f-nombre").focus();return}
+  const btn=document.getElementById("btn-agregar");
+  btn.disabled=true;btn.textContent="Buscando...";setStatus("Buscando...");
   const geo=await geocodificar(dir);
-  if(!geo){setStatus('No encontré esa dirección. Probá más detalle.',4000);btn.disabled=false;btn.textContent='+ Agregar parada';return}
-  const row={ruta_id:ruta.id,fecha:fechaActiva,nombre,direccion:dir,tipo:document.getElementById('f-tipo').value,turno:document.getElementById('f-turno').value,telefono:document.getElementById('f-tel').value.trim(),equipo_entrega:document.getElementById('f-entrega').value,equipo_retira:document.getElementById('f-retira').value,cobro:document.getElementById('f-cobro').value.trim(),nota:document.getElementById('f-nota').value.trim(),lat:geo.lat,lng:geo.lng,done:false,orden:(ruta.paradas||[]).length};
-  const ins=await sb('POST','paradas',row);
-  if(Array.isArray(ins)&&ins[0]){ruta.paradas=[...(ruta.paradas||[]),ins[0]];['f-nombre','f-dir','f-tel','f-cobro','f-nota'].forEach(id=>document.getElementById(id).value='');document.getElementById('f-entrega').value='';document.getElementById('f-retira').value='';render();setStatus('Parada agregada',2000);}
-  btn.disabled=false;btn.textContent='+ Agregar parada';
+  if(!geo){setStatus("No encontre la direccion. Proba con mas detalle.",4000);btn.disabled=false;btn.textContent="+ Agregar parada";return}
+  const row={ruta_id:ruta.id,fecha:fechaActiva,nombre,direccion:dir,tipo:document.getElementById("f-tipo").value,turno:document.getElementById("f-turno").value,telefono:document.getElementById("f-tel").value.trim(),equipo_entrega:document.getElementById("f-entrega").value,equipo_retira:document.getElementById("f-retira").value,cobro:document.getElementById("f-cobro").value.trim(),nota:document.getElementById("f-nota").value.trim(),lat:geo.lat,lng:geo.lng,done:false,orden:(ruta.paradas||[]).length};
+  const ins=await sb("POST","paradas",row);
+  if(Array.isArray(ins)&&ins[0]){ruta.paradas=[...(ruta.paradas||[]),ins[0]];["f-nombre","f-dir","f-tel","f-cobro","f-nota"].forEach(id=>document.getElementById(id).value="");document.getElementById("f-entrega").value="";document.getElementById("f-retira").value="";render();setStatus("Parada agregada",2000);}
+  btn.disabled=false;btn.textContent="+ Agregar parada";
 }
 async function marcarDone(rid,pid){
   const ruta=rutas.find(r=>r.id===rid);if(!ruta)return;
   const p=ruta.paradas.find(x=>x.id===pid);
-  if(p){p.done=true;await sb('PATCH','paradas',{done:true},`?id=eq.${pid}`);render()}
+  if(p){p.done=true;await sb("PATCH","paradas",{done:true},"?id=eq."+pid);render()}
 }
 async function eliminarParada(rid,pid){
-  if(!confirm('¿Eliminar esta parada?'))return;
+  if(!confirm("Eliminar esta parada?"))return;
   const ruta=rutas.find(r=>r.id===rid);if(!ruta)return;
   ruta.paradas=ruta.paradas.filter(p=>p.id!==pid);
-  await sb('DELETE','paradas',null,`?id=eq.${pid}`);render();
+  await sb("DELETE","paradas",null,"?id=eq."+pid);
+  map.closePopup();render();
+}
+async function eliminarParadaGlobal(pid){
+  if(!confirm("Eliminar esta parada?"))return;
+  await sb("DELETE","paradas",null,"?id=eq."+pid);
+  map.closePopup();
+  if(modoTodos)await renderTodosMapa();else await cargarTodo();
 }
 async function geocodificar(dir){
   try{
-    const q=encodeURIComponent(dir+', Buenos Aires, Argentina');
-    const r=await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${q}&limit=1&countrycodes=ar`,{headers:{'Accept-Language':'es'}});
+    const q=encodeURIComponent(dir+", Buenos Aires, Argentina");
+    const r=await fetch("https://nominatim.openstreetmap.org/search?format=json&q="+q+"&limit=1&countrycodes=ar",{headers:{"Accept-Language":"es"}});
     const d=await r.json();
     if(d&&d.length>0)return{lat:parseFloat(d[0].lat),lng:parseFloat(d[0].lon)};
   }catch(e){}
@@ -273,201 +298,184 @@ function distKm(a,b){
   const x=Math.sin(dLat/2)**2+Math.cos(a.lat*Math.PI/180)*Math.cos(b.lat*Math.PI/180)*Math.sin(dLng/2)**2;
   return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
 }
-function optimizarOrden(paradas){
-  const conCoords=paradas.filter(p=>p.lat&&p.lng);
-  const sinCoords=paradas.filter(p=>!p.lat||!p.lng);
-  if(conCoords.length<=1)return paradas;
-  const ORIGEN={lat:-34.745,lng:-58.401};
-  let entregas=[...conCoords.filter(p=>p.tipo==='entrega')];
-  let secundarios=[...conCoords.filter(p=>p.tipo!=='entrega')];
-  const rutaEntregas=[];let actual=ORIGEN;
-  while(entregas.length>0){
-    let mejor=null,mejorDist=Infinity;
-    entregas.forEach(p=>{const d=distKm(actual,p);if(d<mejorDist){mejorDist=d;mejor=p;}});
-    rutaEntregas.push(mejor);actual=mejor;entregas=entregas.filter(p=>p!==mejor);
-  }
-  const rutaFinal=[...rutaEntregas];
-  secundarios.forEach(sec=>{
-    let mejorPos=rutaFinal.length,mejorCosto=Infinity;
-    for(let i=0;i<=rutaFinal.length;i++){
-      const prev=i===0?ORIGEN:rutaFinal[i-1];
-      const next=i===rutaFinal.length?null:rutaFinal[i];
-      const dExtra=next?distKm(prev,sec)+distKm(sec,next)-distKm(prev,next):distKm(prev,sec);
-      if(dExtra*1.6<mejorCosto){mejorCosto=dExtra*1.6;mejorPos=i;}
-    }
-    rutaFinal.splice(mejorPos,0,sec);
-  });
-  return [...rutaFinal,...sinCoords];
+function optimizarOrden(paradas,cap){
+  const activas=paradas.filter(p=>!p.done);
+  const cc=activas.filter(p=>p.lat&&p.lng),sc=activas.filter(p=>!p.lat||!p.lng);
+  if(!cc.length)return activas;
+  const O={lat:-34.745,lng:-58.401};
+  let e=[...cc.filter(p=>p.tipo==="entrega")],s=[...cc.filter(p=>p.tipo!=="entrega")];
+  const re=[];let ac=O;
+  while(e.length>0){let b=null,bd=Infinity;e.forEach(p=>{const d=distKm(ac,p);if(d<bd){bd=d;b=p;}});re.push(b);ac=b;e=e.filter(p=>p!==b);}
+  const rf=[...re];
+  s.forEach(sec=>{let bp=rf.length,bc=Infinity;
+    for(let i=0;i<=rf.length;i++){const pv=i===0?O:rf[i-1],nx=i===rf.length?null:rf[i];const de=nx?distKm(pv,sec)+distKm(sec,nx)-distKm(pv,nx):distKm(pv,sec);if(de*1.6<bc){bc=de*1.6;bp=i;}}
+    rf.splice(bp,0,sec);});
+  const todas=[...rf,...sc];
+  return cap&&cap<todas.length?todas.slice(0,cap):todas;
 }
 function generarRuta(){
   const ruta=getRuta();if(!ruta)return;
+  const cap=getCap();
   const activas=(ruta.paradas||[]).filter(p=>!p.done);
-  if(!activas.length){alert('No hay paradas pendientes.');return}
-  const ordenadas=optimizarOrden(activas);
-  const origen='Coronel+Diaz+43+Banfield';
-  const wps=ordenadas.filter(p=>p.lat&&p.lng).map(p=>`${p.lat},${p.lng}`).join('|');
-  const dest=ordenadas.filter(p=>p.lat&&p.lng).slice(-1)[0];
-  const mapsLink=`https://www.google.com/maps/dir/?api=1&origin=${origen}&destination=${dest.lat},${dest.lng}&waypoints=${wps}&travelmode=driving`;
-  const fecha=new Date(fechaActiva+'T12:00:00').toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'});
-  let t=`🧊 *FRIOFRIAS · ${ruta.nombre.toUpperCase()}*\n`;
-  t+=`📅 ${fecha}\n`;
-  t+=`🗺 Link GPS: ${mapsLink}\n\n`;
-  t+=`📍 *Salida: Coronel Díaz 43, Banfield*\n\n`;
-  ordenadas.forEach((p,i)=>{
-    const tipo=p.tipo==='entrega'?'Entrega':p.tipo==='reclamo'?'Reclamo':'Retiro';
-    t+=`*${i+1}. ${p.nombre}* [${tipo}]\n`;
-    t+=`📌 ${p.direccion}\n`;
-    if(p.turno)t+=`🕐 Turno ${p.turno}\n`;
-    if(p.equipo_retira)t+=`⬆️ Retira: ${p.equipo_retira}\n`;
-    if(p.equipo_entrega)t+=`⬇️ Entrega: ${p.equipo_entrega}\n`;
-    if(p.cobro)t+=`💰 Cobrar: ${p.cobro}\n`;
-    if(p.telefono)t+=`📞 Tel: ${p.telefono}\n`;
-    if(p.nota)t+=`📝 ${p.nota}\n`;
-    t+='\n';
+  if(!activas.length){alert("No hay paradas pendientes.");return}
+  const ord=optimizarOrden(ruta.paradas,cap);
+  if(!ord.length){alert("Sin paradas para la ruta.");return}
+  const wps=ord.filter(p=>p.lat&&p.lng).map(p=>p.lat+","+p.lng).join("|");
+  const dest=ord.filter(p=>p.lat&&p.lng).slice(-1)[0];
+  if(!dest){alert("Las paradas no tienen ubicacion.");return}
+  const ml="https://www.google.com/maps/dir/?api=1&origin=Coronel+Diaz+43+Banfield&destination="+dest.lat+","+dest.lng+"&waypoints="+wps+"&travelmode=driving";
+  const fecha=new Date(fechaActiva+"T12:00:00").toLocaleDateString("es-AR",{weekday:"long",day:"numeric",month:"long"});
+  const sob=activas.length-ord.length;
+  let t="FRIOFRIAS - "+ruta.nombre.toUpperCase()+"\n";
+  t+="Fecha: "+fecha+"\n";
+  t+="Capacidad: "+cap+" heladera"+(cap!==1?"s":"")+"\n";
+  t+="GPS: "+ml+"\n\nSalida: Coronel Diaz 43, Banfield\n\n";
+  ord.forEach((p,i)=>{
+    const tipo=p.tipo==="entrega"?"Entrega":p.tipo==="reclamo"?"Reclamo":"Retiro";
+    t+=(i+1)+". "+p.nombre+" ["+tipo+"]\n   "+p.direccion+"\n";
+    if(p.turno)t+="   Turno: "+p.turno+"\n";
+    if(p.equipo_retira)t+="   Retira: "+p.equipo_retira+"\n";
+    if(p.equipo_entrega)t+="   Entrega: "+p.equipo_entrega+"\n";
+    if(p.cobro)t+="   Cobrar: "+p.cobro+"\n";
+    if(p.telefono)t+="   Tel: "+p.telefono+"\n";
+    if(p.nota)t+="   Nota: "+p.nota+"\n";
+    t+="\n";
   });
-  if(ordenadas.some(p=>p.equipo_retira))t+=`⚠️ *IMPORTANTE:* Hay recambios — dejar espacio en la camioneta.\n`;
-  t+=`\n📊 *${ordenadas.length} paradas · Ruta optimizada automáticamente*`;
+  if(ord.some(p=>p.equipo_retira))t+="IMPORTANTE: Hay recambios - dejar espacio en camioneta.\n";
+  if(sob>0)t+="\nQuedan "+sob+" parada"+(sob!==1?"s":"")+" fuera del cupo.";
+  t+="\n"+ord.length+" paradas - Ruta optimizada";
   rutaTexto=t;
-  document.getElementById('modal-titulo').textContent=`Ruta optimizada: ${ruta.nombre}`;
-  document.getElementById('modal-texto').textContent=t;
-  document.getElementById('modal-bg').classList.add('open');
+  document.getElementById("modal-titulo").textContent="Ruta: "+ruta.nombre+" ("+cap+" helad.)";
+  document.getElementById("modal-texto").textContent=t;
+  document.getElementById("modal-bg").classList.add("open");
 }
-function copiarRuta(){navigator.clipboard.writeText(rutaTexto).then(()=>alert('¡Copiado! Pegalo en WhatsApp.'))}
-function enviarWhatsapp(){window.open(`https://wa.me/?text=${encodeURIComponent(rutaTexto)}`,'_blank')}
-async function abrirTodos(){
-  const hoy=new Date(),dow=hoy.getDay(),lunes=new Date(hoy);
-  lunes.setDate(hoy.getDate()-(dow===0?6:dow-1));
-  const fechas=Array.from({length:6},(_,i)=>{const d=new Date(lunes);d.setDate(lunes.getDate()+i);return d.toISOString().slice(0,10);});
-  const DIAS=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
-  setStatus('Cargando todos los pedidos...');
-  try{
-    const [rDB,pDB]=await Promise.all([sb('GET','rutas',null,'?order=fecha.asc,created_at.asc'),sb('GET','paradas',null,'?done=eq.false&order=fecha.asc,created_at.asc')]);
-    if(!Array.isArray(rDB)||!Array.isArray(pDB)){setStatus('Error',3000);return;}
-    const sf=new Set(fechas);
-    const rutasSemana=rDB.filter(r=>sf.has(r.fecha));
-    const paradasPendientes=pDB.filter(p=>sf.has(p.fecha));
-    let html='',total=0;
-    fechas.forEach(fecha=>{
-      const rutasDelDia=rutasSemana.filter(r=>r.fecha===fecha);
-      const paradasDelDia=paradasPendientes.filter(p=>p.fecha===fecha);
-      if(!paradasDelDia.length)return;
-      total+=paradasDelDia.length;
-      const d=new Date(fecha+'T12:00:00');
-      const esHoy=fecha===hoyISO();
-      html+='<div style="margin-bottom:16px">';
-      html+='<div style="font-size:12px;font-weight:600;color:#185FA5;padding:6px 0;border-bottom:1px solid #e5e5e3;margin-bottom:8px">';
-      html+=DIAS[d.getDay()]+' '+d.getDate()+'/'+(d.getMonth()+1)+(esHoy?' · HOY':'');
-      html+=' <span style="color:#888;font-weight:400">('+paradasDelDia.length+' pendientes)</span></div>';
-      rutasDelDia.forEach(ruta=>{
-        const pRuta=paradasDelDia.filter(p=>p.ruta_id===ruta.id);
-        if(!pRuta.length)return;
-        html+='<div style="font-size:11px;color:#888;margin-bottom:4px;font-weight:500">'+ruta.nombre+'</div>';
-        pRuta.forEach(p=>{
-          const tipo=p.tipo==='entrega'?'Entrega':p.tipo==='reclamo'?'Reclamo':'Retiro';
-          const color=p.tipo==='entrega'?'#0C447C':p.tipo==='reclamo'?'#791F1F':'#633806';
-          const bg=p.tipo==='entrega'?'#E6F1FB':p.tipo==='reclamo'?'#FCEBEB':'#FAEEDA';
-          html+='<div style="background:#f8f8f6;border-radius:7px;padding:8px 10px;margin-bottom:4px;cursor:pointer" onclick="irAFecha(\''+fecha+'\')">';
-          html+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">';
-          html+='<span style="font-size:10px;font-weight:500;padding:2px 6px;border-radius:20px;background:'+bg+';color:'+color+'">'+tipo+'</span>';
-          html+='<span style="font-size:12px;font-weight:500">'+p.nombre+'</span></div>';
-          html+='<div style="font-size:11px;color:#888">'+p.direccion+'</div>';
-          html+='<div style="font-size:11px;color:#aaa;margin-top:2px;display:flex;gap:6px;flex-wrap:wrap">';
-          if(p.turno)html+='<span>🕐 '+p.turno+'</span>';
-          if(p.equipo_entrega)html+='<span>⬇️ '+p.equipo_entrega+'</span>';
-          if(p.equipo_retira)html+='<span>⬆️ '+p.equipo_retira+'</span>';
-          if(p.cobro)html+='<span style="color:#854F0B">💰 '+p.cobro+'</span>';
-          if(p.telefono)html+='<span>📞 '+p.telefono+'</span>';
-          html+='</div></div>';
-        });
-      });
-      html+='</div>';
-    });
-    if(!total)html='<div style="text-align:center;color:#aaa;padding:24px">No hay pedidos pendientes esta semana</div>';
-    document.getElementById('todos-contenido').innerHTML=html;
-    document.getElementById('modal-todos').classList.add('open');
-    setStatus('Listo',1000);
-  }catch(e){setStatus('Error cargando pedidos',3000);}
-}
-function irAFecha(fecha){cerrarTodos();fechaActiva=fecha;document.getElementById('fecha-input').value=fecha;rutaIdx=0;rutas=[];cargarTodo();}
-function cerrarTodos(){document.getElementById('modal-todos').classList.remove('open')}
-function cerrarTodosBg(e){if(e.target===document.getElementById('modal-todos'))cerrarTodos()}
-function cerrarModal(){document.getElementById('modal-bg').classList.remove('open')}
-function cerrarModalBg(e){if(e.target===document.getElementById('modal-bg'))cerrarModal()}
+function copiarRuta(){navigator.clipboard.writeText(rutaTexto).then(()=>alert("Copiado!"))}
+function enviarWhatsapp(){window.open("https://wa.me/?text="+encodeURIComponent(rutaTexto),"_blank")}
+function cerrarModal(){document.getElementById("modal-bg").classList.remove("open")}
+function cerrarModalBg(e){if(e.target===document.getElementById("modal-bg"))cerrarModal()}
 function abrirGoogleMaps(){
   const ruta=getRuta();if(!ruta)return;
-  const activas=(ruta.paradas||[]).filter(p=>!p.done);
-  const ordenadas=optimizarOrden(activas).filter(p=>p.lat&&p.lng);
-  if(!ordenadas.length){alert('Sin paradas con ubicación.');return}
-  const wps=ordenadas.map(p=>`${p.lat},${p.lng}`).join('|');
-  window.open(`https://www.google.com/maps/dir/?api=1&origin=Coronel+Diaz+43+Banfield&destination=${ordenadas.slice(-1)[0].lat},${ordenadas.slice(-1)[0].lng}&waypoints=${wps}&travelmode=driving`,'_blank');
+  const ord=optimizarOrden(ruta.paradas,getCap()).filter(p=>p.lat&&p.lng);
+  if(!ord.length){alert("Sin paradas.");return}
+  window.open("https://www.google.com/maps/dir/?api=1&origin=Coronel+Diaz+43+Banfield&destination="+ord.slice(-1)[0].lat+","+ord.slice(-1)[0].lng+"&waypoints="+ord.map(p=>p.lat+","+p.lng).join("|")+"&travelmode=driving","_blank");
 }
 function abrirWaze(){
   const ruta=getRuta();if(!ruta)return;
   const a=(ruta.paradas||[]).filter(p=>!p.done&&p.lat&&p.lng);
-  if(!a.length){alert('Sin paradas con ubicación.');return}
-  window.open(`https://waze.com/ul?ll=${a[0].lat},${a[0].lng}&navigate=yes`,'_blank');
+  if(!a.length){alert("Sin paradas.");return}
+  window.open("https://waze.com/ul?ll="+a[0].lat+","+a[0].lng+"&navigate=yes","_blank");
+}
+async function toggleTodos(){
+  modoTodos=!modoTodos;
+  const btn=document.getElementById("btn-todos");
+  if(modoTodos){btn.textContent="Ver solo el dia seleccionado";btn.classList.add("active");await renderTodosMapa();}
+  else{btn.textContent="Ver todos los pedidos en el mapa";btn.classList.remove("active");document.getElementById("map-legend").classList.remove("show");render();}
+}
+async function renderTodosMapa(){
+  setStatus("Cargando todos los pedidos...");
+  try{
+    const [pDB,rDB]=await Promise.all([sb("GET","paradas",null,"?done=eq.false&order=fecha.asc,created_at.asc"),sb("GET","rutas",null,"?order=fecha.asc")]);
+    if(!Array.isArray(pDB))return;
+    const fu=[...new Set(pDB.map(p=>p.fecha))].sort();
+    const rm={};if(Array.isArray(rDB))rDB.forEach(r=>rm[r.id]=r);
+    Object.values(markers).forEach(m=>map.removeLayer(m));markers={};const allM=[];
+    fu.forEach((fecha,fi)=>{
+      const color=CF[fi%CF.length];
+      pDB.filter(p=>p.fecha===fecha&&p.lat&&p.lng).forEach((p,pi)=>{
+        const eq=(p.equipo_entrega||p.equipo_retira||"");
+        const lbl=eq.includes("1500")?"1.5k":eq.replace("L","").replace(" black","*").replace(" Coca","C").slice(0,5)||"?";
+        const icon=L.divIcon({html:'<svg xmlns="http://www.w3.org/2000/svg" width="46" height="52" viewBox="0 0 46 52"><circle cx="23" cy="21" r="19" fill="'+color+'" stroke="white" stroke-width="2.5"/><text x="23" y="17" text-anchor="middle" font-size="9" font-weight="700" fill="white" font-family="sans-serif">'+(pi+1)+'</text><text x="23" y="28" text-anchor="middle" font-size="10" font-weight="700" fill="white" font-family="sans-serif">'+lbl+'</text><polygon points="23,48 15,32 31,32" fill="'+color+'"/></svg>',className:"",iconSize:[46,52],iconAnchor:[23,50],popupAnchor:[0,-48]});
+        const m=L.marker([p.lat,p.lng],{icon}).addTo(map);
+        const tipo=p.tipo==="entrega"?"Entrega":p.tipo==="reclamo"?"Reclamo":"Retiro";
+        const rn=rm[p.ruta_id]?.nombre||"";
+        const d=new Date(fecha+"T12:00:00");
+        const fl=DI[d.getDay()]+" "+d.getDate()+"/"+(d.getMonth()+1)+(fecha===hoyISO()?" HOY":"");
+        m.bindPopup('<div style="min-width:180px"><b>'+p.nombre+'</b><br><small>'+p.direccion+'</small><br><small style="color:#888">'+tipo+' - '+rn+'</small><br><small style="color:'+color+';font-weight:600">'+fl+'</small>'+(p.turno?'<br><small>Turno: '+p.turno+'</small>':"")+(p.equipo_entrega?'<br><small>Entrega: '+p.equipo_entrega+'</small>':"")+(p.equipo_retira?'<br><small>Retira: '+p.equipo_retira+'</small>':"")+(p.cobro?'<br><small style="color:#854F0B">Cobrar: '+p.cobro+'</small>':"")+(p.telefono?'<br><small>Tel: '+p.telefono+'</small>':"")+'<br><button onclick="eliminarParadaGlobal('+p.id+')" style="margin-top:8px;width:100%;padding:6px;background:#e24b4a;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px">x Eliminar pedido</button></div>');
+        markers["g_"+p.id]=m;allM.push(m);
+      });
+    });
+    const legend=document.getElementById("map-legend");
+    legend.innerHTML='<div style="font-size:11px;font-weight:600;margin-bottom:6px">Leyenda</div>'+fu.map((fecha,fi)=>{const d=new Date(fecha+"T12:00:00");const cnt=pDB.filter(p=>p.fecha===fecha).length;return '<div class="leg-row"><div class="leg-dot" style="background:'+CF[fi%CF.length]+'"></div>'+DI[d.getDay()]+" "+d.getDate()+"/"+(d.getMonth()+1)+(fecha===hoyISO()?" (hoy)":"")+" - "+cnt+"</div>";}).join("");
+    legend.classList.add("show");
+    if(allM.length>0)map.fitBounds(L.featureGroup(allM).getBounds().pad(0.15));
+    setStatus(pDB.length+" pedidos pendientes",3000);
+  }catch(e){setStatus("Error",3000);}
 }
 function render(){buildTabs();renderSidebar();renderPins()}
+function renderCapInfo(){
+  const ruta=getRuta();if(!ruta)return;
+  const cap=getCap(),act=(ruta.paradas||[]).filter(p=>!p.done).length;
+  document.getElementById("cap-info").innerHTML=act>cap?'<span class="cap-over">'+act+"/"+cap+" excede cupo</span>":'<span class="cap-ok">'+act+"/"+cap+" cargadas</span>";
+  document.getElementById("ruta-cap").value=cap;
+}
 function buildTabs(){
-  document.getElementById('route-tabs').innerHTML=rutas.map((r,i)=>{
-    const cnt=(r.paradas||[]).filter(p=>!p.done).length;
-    return `<div class="route-tab${i===rutaIdx?' active':''}" onclick="setRuta(${i})">${r.nombre}${cnt>0?`<span class="cnt">${cnt}</span>`:''}</div>`;
-  }).join('');
+  document.getElementById("route-tabs").innerHTML=rutas.map((r,i)=>{
+    const cnt=(r.paradas||[]).filter(p=>!p.done).length,cap=parseInt(r.capacidad||6),over=cnt>cap;
+    return '<div class="route-tab'+(i===rutaIdx?" active":"")+'" onclick="setRuta('+i+')">'+r.nombre+(cnt>0?'<span class="cnt" style="'+(over?"background:#FCEBEB;color:#A32D2D":"")+'">'+(over?"!":"")+cnt+"/"+cap+"</span>":"")+"</div>";
+  }).join("");
+}
+function makePin(color,num,lbl){
+  return L.divIcon({html:'<svg xmlns="http://www.w3.org/2000/svg" width="46" height="52" viewBox="0 0 46 52"><circle cx="23" cy="21" r="19" fill="'+color+'" stroke="white" stroke-width="2.5"/><text x="23" y="17" text-anchor="middle" font-size="9" font-weight="700" fill="white" font-family="sans-serif">'+num+'</text><text x="23" y="28" text-anchor="middle" font-size="10" font-weight="700" fill="white" font-family="sans-serif">'+lbl+'</text><polygon points="23,48 15,32 31,32" fill="'+color+'"/></svg>',className:"",iconSize:[46,52],iconAnchor:[23,50],popupAnchor:[0,-48]});
 }
 function renderSidebar(){
   const ruta=getRuta();
-  if(!ruta){document.getElementById('lista').innerHTML='<div class="empty">Sin rutas para este día</div>';return}
-  document.getElementById('ruta-nombre').value=ruta.nombre;
-  const paradas=ruta.paradas||[];
-  const activas=paradas.filter(p=>!p.done);
-  document.getElementById('cnt-e').textContent=activas.filter(p=>p.tipo==='entrega').length;
-  document.getElementById('cnt-r').textContent=activas.filter(p=>p.tipo==='reclamo').length;
-  document.getElementById('cnt-t').textContent=activas.filter(p=>p.tipo==='retiro').length;
-  if(!paradas.length){document.getElementById('lista').innerHTML='<div class="empty">Sin paradas — agregá la primera</div>';return}
-  document.getElementById('lista').innerHTML=paradas.map((p,i)=>{
-    const tipo=p.tipo==='entrega'?'Entrega':p.tipo==='reclamo'?'Reclamo':'Retiro';
-    return `<div class="parada${p.done?' done':''}">
-      <div class="parada-actions">
-        ${!p.done?`<button class="btn-done" onclick="marcarDone(${ruta.id},${p.id})">✓ Entregado</button>`:'<span style="font-size:11px;color:#2d9d6e;padding:2px 6px;background:#eafaf3;border-radius:5px">✓ Entregado</span>'}
-        <button class="btn-del-p" onclick="eliminarParada(${ruta.id},${p.id})">× Borrar</button>
-      </div>
-      <div class="parada-top">
-        <div class="parada-num">${i+1}</div>
-        <span class="badge ${p.tipo}">${tipo}</span>
-        <span class="parada-nombre">${p.nombre}</span>
-      </div>
-      <div class="parada-dir">${p.direccion}</div>
-      <div class="parada-det">
-        ${p.turno?`<span>🕐 ${p.turno}</span>`:''}
-        ${p.equipo_entrega?`<span>⬇️ ${p.equipo_entrega}</span>`:''}
-        ${p.equipo_retira?`<span>⬆️ ${p.equipo_retira}</span>`:''}
-        ${p.cobro?`<span style="color:#854F0B">💰 ${p.cobro}</span>`:''}
-        ${p.telefono?`<span>📞 ${p.telefono}</span>`:''}
-      </div>
-    </div>`;
-  }).join('');
+  if(!ruta){document.getElementById("lista").innerHTML='<div class="empty">Sin rutas para este dia</div>';return}
+  document.getElementById("ruta-nombre").value=ruta.nombre;
+  renderCapInfo();
+  const paradas=ruta.paradas||[],activas=paradas.filter(p=>!p.done);
+  document.getElementById("cnt-e").textContent=activas.filter(p=>p.tipo==="entrega").length;
+  document.getElementById("cnt-r").textContent=activas.filter(p=>p.tipo==="reclamo").length;
+  document.getElementById("cnt-t").textContent=activas.filter(p=>p.tipo==="retiro").length;
+  if(!paradas.length){document.getElementById("lista").innerHTML='<div class="empty">Sin paradas - agrega la primera</div>';return}
+  const cap=getCap(),ord=optimizarOrden(paradas,999);
+  document.getElementById("lista").innerHTML=ord.map((p,i)=>{
+    const tipo=p.tipo==="entrega"?"Entrega":p.tipo==="reclamo"?"Reclamo":"Retiro";
+    const fc=!p.done&&(i+1)>cap;
+    return '<div class="parada'+(p.done?" done":"")+'" style="'+(fc?"border-color:#fcc;background:#fffaf8":"")+'">'+
+      (fc?'<div style="font-size:10px;color:#e24b4a;margin-bottom:3px">Fuera del cupo</div>':"")+
+      '<div class="parada-top"><div class="parada-num" style="'+(fc?"background:#e24b4a":"")+'">'+(i+1)+'</div><span class="badge '+p.tipo+'">'+tipo+'</span><span class="parada-nombre">'+p.nombre+'</span></div>'+
+      '<div class="parada-dir">'+p.direccion+'</div>'+
+      '<div class="parada-det">'+
+      (p.turno?'<span>Turno: '+p.turno+'</span>':"")+
+      (p.equipo_entrega?'<span>Entrega: '+p.equipo_entrega+'</span>':"")+
+      (p.equipo_retira?'<span>Retira: '+p.equipo_retira+'</span>':"")+
+      (p.cobro?'<span style="color:#854F0B">Cobrar: '+p.cobro+'</span>':"")+
+      (p.telefono?'<span>Tel: '+p.telefono+'</span>':"")+'</div>'+
+      (!p.done?'<div class="parada-btns"><button class="btn-done" onclick="marcarDone('+ruta.id+','+p.id+')">Entregado</button><button class="btn-del-p" onclick="eliminarParada('+ruta.id+','+p.id+')">x Eliminar</button></div>':
+      '<div style="font-size:11px;color:#2d9d6e;padding:4px 0">Entregado</div>')+'</div>';
+  }).join("");
 }
 function renderPins(){
-  Object.values(markers).forEach(m=>map.removeLayer(m));
-  markers={};const allM=[];
+  Object.values(markers).forEach(m=>map.removeLayer(m));markers={};const allM=[];
+  document.getElementById("map-legend").classList.remove("show");
+  const cap=getCap();
   rutas.forEach((ruta,ri)=>{
-    const color=COLORES[ri%COLORES.length];
-    (ruta.paradas||[]).filter(p=>!p.done&&p.lat&&p.lng).forEach((p,pi)=>{
-      const eq=(p.equipo_entrega||p.equipo_retira||'');
-      const label=eq.includes('1500')?'1.5k':eq.replace('L','').replace(' black','★').replace(' Coca','©').slice(0,5)||'?';
-      const icon=L.divIcon({html:`<svg xmlns="http://www.w3.org/2000/svg" width="46" height="52" viewBox="0 0 46 52"><circle cx="23" cy="21" r="19" fill="${color}" stroke="white" stroke-width="2.5"/><text x="23" y="17" text-anchor="middle" font-size="9" font-weight="700" fill="white" font-family="sans-serif">${pi+1}</text><text x="23" y="28" text-anchor="middle" font-size="10" font-weight="700" fill="white" font-family="sans-serif">${label}</text><polygon points="23,48 15,32 31,32" fill="${color}"/></svg>`,className:'',iconSize:[46,52],iconAnchor:[23,50],popupAnchor:[0,-48]});
-      const m=L.marker([p.lat,p.lng],{icon}).addTo(map);
-      const tipo=p.tipo==='entrega'?'Entrega':p.tipo==='reclamo'?'Reclamo':'Retiro';
-      m.bindPopup(`<strong>${p.nombre}</strong><br><span style="font-size:11px">${p.direccion}</span><br><span style="font-size:11px;color:#666">${tipo} · ${ruta.nombre}</span>${p.turno?`<br><span style="font-size:11px">🕐 ${p.turno}</span>`:''}${p.equipo_entrega?`<br><span style="font-size:11px">⬇️ ${p.equipo_entrega}</span>`:''}${p.equipo_retira?`<br><span style="font-size:11px">⬆️ ${p.equipo_retira}</span>`:''}${p.cobro?`<br><span style="font-size:11px;color:#854F0B">💰 ${p.cobro}</span>`:''}${p.telefono?`<br><span style="font-size:11px">📞 ${p.telefono}</span>`:''}`);
-      markers[`${ruta.id}_${p.id}`]=m;allM.push(m);
+    const color=CR[ri%CR.length];
+    const ord=optimizarOrden(ruta.paradas||[],999);
+    ord.filter(p=>!p.done&&p.lat&&p.lng).forEach((p,pi)=>{
+      const fc=(pi+1)>cap&&ri===rutaIdx;
+      const pc=fc?"#aaa":color;
+      const eq=(p.equipo_entrega||p.equipo_retira||"");
+      const lbl=eq.includes("1500")?"1.5k":eq.replace("L","").replace(" black","*").replace(" Coca","C").slice(0,5)||"?";
+      const m=L.marker([p.lat,p.lng],{icon:makePin(pc,pi+1,lbl)}).addTo(map);
+      const tipo=p.tipo==="entrega"?"Entrega":p.tipo==="reclamo"?"Reclamo":"Retiro";
+      m.bindPopup('<div style="min-width:180px"><b>'+p.nombre+'</b>'+(fc?' <small style="color:#e24b4a">fuera cupo</small>':"")+
+        '<br><small>'+p.direccion+'</small><br><small style="color:#888">'+tipo+' - '+ruta.nombre+'</small>'+
+        (p.turno?'<br><small>Turno: '+p.turno+'</small>':"")+
+        (p.equipo_entrega?'<br><small>Entrega: '+p.equipo_entrega+'</small>':"")+
+        (p.equipo_retira?'<br><small>Retira: '+p.equipo_retira+'</small>':"")+
+        (p.cobro?'<br><small style="color:#854F0B">Cobrar: '+p.cobro+'</small>':"")+
+        (p.telefono?'<br><small>Tel: '+p.telefono+'</small>':"")+
+        '<br><button onclick="eliminarParada('+ruta.id+','+p.id+')" style="margin-top:8px;width:100%;padding:6px;background:#e24b4a;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px">x Eliminar pedido</button></div>');
+      markers[ruta.id+"_"+p.id]=m;allM.push(m);
     });
   });
   if(allM.length>0)map.fitBounds(L.featureGroup(allM).getBounds().pad(0.15));
 }
 function setRuta(i){rutaIdx=i;render()}
-function cambiarFecha(v){fechaActiva=v;rutaIdx=0;rutas=[];cargarTodo();}
-function irHoy(){fechaActiva=hoyISO();document.getElementById('fecha-input').value=fechaActiva;cambiarFecha(fechaActiva);}
-function setStatus(msg,hideAfter=0){const b=document.getElementById('status-bar');b.textContent=msg;b.style.opacity='1';if(hideAfter)setTimeout(()=>{b.style.opacity='0'},hideAfter);}
+function cambiarFecha(v){fechaActiva=v;rutaIdx=0;rutas=[];modoTodos=false;const b=document.getElementById("btn-todos");b.classList.remove("active");b.textContent="Ver todos los pedidos en el mapa";cargarTodo();}
+function irHoy(){fechaActiva=hoyISO();document.getElementById("fecha-input").value=fechaActiva;cambiarFecha(fechaActiva);}
+function setStatus(msg,h=0){const b=document.getElementById("status-bar");b.textContent=msg;b.style.opacity="1";if(h)setTimeout(()=>{b.style.opacity="0"},h);}
 init();
 </script>
 </body>

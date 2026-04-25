@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Friofrias · Logística</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f3; color: #1a1a1a; }
+
+    .app { display: flex; flex-direction: column; height: 100dvh; }
+
+    /* HEADER */
+    .header { background: #fff; border-bottom: 1px solid #e5e5e3; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+    .header-left { display: flex; align-items: center; gap: 10px; }
+    .logo { font-size: 16px; font-weight: 600; color: #1a1a1a; }
+    .logo span { color: #185FA5; }
+    .header-date { font-size: 12px; color: #888; }
+    .week-tabs { display: flex; gap: 4px; overflow-x: auto; padding: 0 2px; }
+    .week-tabs::-webkit-scrollbar { display: none; }
+    .day-tab { flex-shrink: 0; padding: 4px 10px; border-radius: 8px; border: 1px solid #e5e5e3; background: #fff; font-size: 11px; cursor: pointer; color: #666; text-align: center; min-width: 46px; transition: all .15s; }
+    .day-tab:hover { border-color: #bbb; color: #333; }
+    .day-tab.active { background: #185FA5; border-color: #185FA5; color: #fff; font-weight: 500; }
+    .day-tab .cnt { display: block; font-size: 14px; font-weight: 600; line-height: 1.3; }
+    .day-tab .name { display: block; font-size: 9px; line-height: 1.2; }
+
+    /* MAIN LAYOUT */
+    .main { display: flex; flex: 1; overflow: hidden; }
+
+    /* SIDEBAR */
+    .sidebar { width: 300px; flex-shrink: 0; background: #fff; border-right: 1px solid #e5e5e3; display: flex; flex-direction: column; overflow: hidden; }
+    .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; padding: 10px 12px; border-bottom: 1px solid #f0f0ee; }
+    .stat { background: #f8f8f6; border-radius: 8px; padding: 7px 6px; text-align: center; }
+    .stat-n { font-size: 20px; font-weight: 600; }
+    .stat-l { font-size: 10px; color: #888; margin-top: 1px; }
+    .ne { color: #185FA5; } .nr { color: #A32D2D; } .nt { color: #854F0B; }
+
+    /* FORM */
+    .form { padding: 10px 12px; border-bottom: 1px solid #f0f0ee; display: flex; flex-direction: column; gap: 7px; }
+    .form input, .form select { width: 100%; font-size: 13px; padding: 7px 9px; border: 1px solid #e0e0de; border-radius: 8px; background: #fff; color: #1a1a1a; outline: none; }
+    .form input:focus, .form select:focus { border-color: #185FA5; }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .btn-add { font-size: 13px; font-weight: 500; padding: 8px; border-radius: 8px; border: 1px solid #185FA5; background: #185FA5; color: #fff; cursor: pointer; transition: background .15s; }
+    .btn-add:hover { background: #0C447C; }
+    .btn-add:disabled { background: #aaa; border-color: #aaa; cursor: not-allowed; }
+
+    /* LIST */
+    .list { flex: 1; overflow-y: auto; padding: 8px; }
+    .item { background: #fff; border: 1px solid #e5e5e3; border-radius: 8px; padding: 9px 11px; margin-bottom: 5px; cursor: pointer; transition: border-color .15s; position: relative; }
+    .item:hover { border-color: #bbb; }
+    .item.selected { border-color: #185FA5; }
+    .item.done { opacity: 0.4; }
+    .item-top { display: flex; align-items: center; gap: 7px; margin-bottom: 2px; padding-right: 52px; }
+    .badge { font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 20px; flex-shrink: 0; }
+    .badge.entrega { background: #E6F1FB; color: #0C447C; }
+    .badge.reclamo { background: #FCEBEB; color: #791F1F; }
+    .badge.retiro  { background: #FAEEDA; color: #633806; }
+    .item-name { font-size: 12px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .item-addr { font-size: 11px; color: #888; margin-top: 1px; }
+    .item-equip { font-size: 11px; color: #aaa; }
+    .item-actions { position: absolute; top: 7px; right: 7px; display: flex; gap: 4px; }
+    .btn-done { background: none; border: 1px solid #e0e0de; border-radius: 5px; cursor: pointer; font-size: 11px; padding: 2px 6px; color: #888; }
+    .btn-done:hover { background: #eafaf3; border-color: #2d9d6e; color: #2d9d6e; }
+    .btn-del { background: none; border: none; cursor: pointer; font-size: 15px; color: #ccc; padding: 1px 3px; }
+    .btn-del:hover { color: #e24b4a; }
+    .empty { padding: 20px; text-align: center; color: #aaa; font-size: 13px; }
+
+    /* FOOTER */
+    .footer { padding: 8px 12px; border-top: 1px solid #f0f0ee; display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: #888; flex-shrink: 0; }
+    .btn-opt { font-size: 11px; padding: 5px 10px; border-radius: 7px; border: 1px solid #e0e0de; background: none; cursor: pointer; color: #555; }
+    .btn-opt:hover { background: #f5f5f3; }
+
+    /* MAP */
+    .map-wrap { flex: 1; position: relative; }
+    #map { width: 100%; height: 100%; }
+
+    /* STATUS BAR */
+    .status-bar { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: rgba(255,255,255,0.95); border: 1px solid #e0e0de; border-radius: 20px; padding: 5px 14px; font-size: 12px; color: #555; z-index: 1000; pointer-events: none; transition: opacity .3s; white-space: nowrap; }
+
+    /* MOBILE */
+    @media (max-width: 700px) {
+      .main { flex-direction: column; }
+      .sidebar { width: 100%; max-height: 55vh; border-right: none; border-bottom: 1px solid #e5e5e3; }
+      .map-wrap { min-height: 45vh; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <div class="logo">Frio<span>frias</span></div>
+      <div class="header-date" id="fecha-hdr"></div>
+    </div>
+    <div class="week-tabs" id="week-tabs"></div>
+  </div>
+
+  <div class="main">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="stats">
+        <div class="stat"><div class="stat-n ne" id="cnt-e">0</div><div class="stat-l">Entregas</div></div>
+        <div class="stat"><div class="stat-n nr" id="cnt-r">0</div><div class="stat-l">Reclamos</div></div>
+        <div class="stat"><div class="stat-n nt" id="cnt-t">0</div><div class="stat-l">Retiros</div></div>
+      </div>
+
+      <div class="form">
+        <input id="f-nombre" type="text" placeholder="Nombre del cliente" />
+        <input id="f-dir" type="text" placeholder="Dirección (ej: Av. Corrientes 2500, CABA)" />
+        <div class="row2">
+          <select id="f-tipo">
+            <option value="entrega">Entrega</option>
+            <option value="reclamo">Reclamo / garantía</option>
+            <option value="retiro">Retiro / recambio</option>
+          </select>
+          <select id="f-equipo">
+            <option value="390">390L</option>
+            <option value="470">470L</option>
+            <option value="600">600L</option>
+            <option value="1500">1500L</option>
+          </select>
+        </div>
+        <div class="row2">
+          <select id="f-dia"></select>
+          <input id="f-nota" type="text" placeholder="Nota" />
+        </div>
+        <button class="btn-add" id="btn-agregar" onclick="agregarPedido()">+ Agregar pedido</button>
+      </div>
+
+      <div class="list" id="lista"></div>
+
+      <div class="footer">
+        <span id="footer-txt">0 paradas</span>
+        <button class="btn-opt" onclick="optimizarRecorrido()">Optimizar recorrido ↗</button>
+      </div>
+    </div>
+
+    <!-- MAP -->
+    <div class="map-wrap">
+      <div class="status-bar" id="status-bar">Cargando mapa...</div>
+      <div id="map"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// ─── SUPABASE CONFIG ───────────────────────────────────────────
+const SUPABASE_URL = 'https://ecluhrcrbcybhfucbbst.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_1MelpVpFmU-Sv-qaZbajhA_DJDF_UQc';
+const TABLE = 'pedidos';
+
+// ─── HELPERS SUPABASE ──────────────────────────────────────────
+async function sbFetch(method, body, query = '') {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}${query}`, {
+    method,
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': method === 'POST' ? 'return=representation' : 'return=minimal'
+    },
+    body: body ? JSON.stringify(body) : undefined
+  });
+  if (method === 'GET' || method === 'POST') return res.json();
+  return res;
+}
+
+const getAll  = ()        => sbFetch('GET', null, '?order=created_at.asc');
+const insert  = (row)     => sbFetch('POST', row);
+const update  = (id, row) => sbFetch('PATCH', row, `?id=eq.${id}`);
+const remove  = (id)      => sbFetch('DELETE', null, `?id=eq.${id}`);
+
+// ─── STATE ─────────────────────────────────────────────────────
+let pedidos = [];
+let diaActivo = null;
+let selId = null;
+let map, markersMap = {};
+
+const COLORES = { entrega: '#185FA5', reclamo: '#A32D2D', retiro: '#854F0B' };
+const DIAS_ES  = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+
+// ─── SEMANA ────────────────────────────────────────────────────
+function getWeekDays() {
+  const hoy = new Date();
+  const dow = hoy.getDay();
+  const lunes = new Date(hoy);
+  lunes.setDate(hoy.getDate() - (dow === 0 ? 6 : dow - 1));
+  return Array.from({ length: 6 }, (_, i) => {
+    const d = new Date(lunes);
+    d.setDate(lunes.getDate() + i);
+    return d;
+  });
+}
+
+function fmtDate(d) { return d.toISOString().slice(0, 10); }
+const semana = getWeekDays();
+const hoyKey = fmtDate(new Date());
+
+// ─── INIT ──────────────────────────────────────────────────────
+async function init() {
+  diaActivo = hoyKey;
+  document.getElementById('fecha-hdr').textContent =
+    new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
+
+  buildDiaSelect();
+  initMap();
+  await cargarPedidos();
+  setStatus('Listo', 2000);
+
+  // Polling cada 30s para sincronizar con el otro usuario
+  setInterval(async () => {
+    await cargarPedidos();
+  }, 30000);
+}
+
+// ─── MAP ───────────────────────────────────────────────────────
+function initMap() {
+  map = L.map('map').setView([-34.62, -58.44], 11);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap',
+    maxZoom: 19
+  }).addTo(map);
+}
+
+function makeIcon(tipo, equipo) {
+  const color = COLORES[tipo];
+  const label = equipo === '1500' ? '1.5k' : equipo + 'L';
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="46" height="52" viewBox="0 0 46 52">
+    <circle cx="23" cy="21" r="19" fill="${color}" stroke="white" stroke-width="2.5"/>
+    <text x="23" y="26" text-anchor="middle" font-size="11" font-weight="700" fill="white" font-family="sans-serif">${label}</text>
+    <polygon points="23,48 15,32 31,32" fill="${color}"/>
+  </svg>`;
+  return L.divIcon({ html: svg, className: '', iconSize: [46, 52], iconAnchor: [23, 50], popupAnchor: [0, -48] });
+}
+
+// ─── GEOCODING ─────────────────────────────────────────────────
+async function geocodificar(dir) {
+  const q = encodeURIComponent(dir + ', Buenos Aires, Argentina');
+  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${q}&limit=1&countrycodes=ar`;
+  try {
+    const r = await fetch(url, { headers: { 'Accept-Language': 'es' } });
+    const data = await r.json();
+    if (data && data.length > 0) return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+  } catch (e) {}
+  return null;
+}
+
+// ─── CARGAR PEDIDOS ────────────────────────────────────────────
+async function cargarPedidos() {
+  try {
+    const data = await getAll();
+    if (Array.isArray(data)) {
+      pedidos = data;
+      render();
+    }
+  } catch (e) {
+    setStatus('Sin conexión — modo offline');
+  }
+}
+
+// ─── AGREGAR ───────────────────────────────────────────────────
+async function agregarPedido() {
+  const nombre = document.getElementById('f-nombre').value.trim();
+  const dir    = document.getElementById('f-dir').value.trim();
+  const tipo   = document.getElementById('f-tipo').value;
+  const equipo = document.getElementById('f-equipo').value;
+  const fecha  = document.getElementById('f-dia').value;
+  const nota   = document.getElementById('f-nota').value.trim();
+  if (!nombre || !dir) { document.getElementById('f-nombre').focus(); return; }
+
+  const btn = document.getElementById('btn-agregar');
+  btn.disabled = true;
+  btn.textContent = 'Buscando dirección...';
+  setStatus('Buscando dirección en el mapa...');
+
+  const geo = await geocodificar(dir);
+  if (!geo) {
+    setStatus('No encontré esa dirección. Probá con más detalle (ej: Av. Corrientes 2500, CABA)', 4000);
+    btn.disabled = false;
+    btn.textContent = '+ Agregar pedido';
+    return;
+  }
+
+  const row = { nombre, direccion: dir, tipo, equipo, fecha, nota, lat: geo.lat, lng: geo.lng, done: false };
+  const inserted = await insert(row);
+  if (Array.isArray(inserted) && inserted[0]) {
+    pedidos.push(inserted[0]);
+    diaActivo = fecha;
+    ['f-nombre','f-dir','f-nota'].forEach(id => document.getElementById(id).value = '');
+    render();
+    setStatus('Pedido agregado', 2000);
+  }
+
+  btn.disabled = false;
+  btn.textContent = '+ Agregar pedido';
+}
+
+// ─── MARCAR DONE ───────────────────────────────────────────────
+async function marcarDone(id) {
+  await update(id, { done: true });
+  const p = pedidos.find(x => x.id === id);
+  if (p) p.done = true;
+  if (selId === id) selId = null;
+  render();
+}
+
+// ─── ELIMINAR ─────────────────────────────────────────────────
+async function eliminar(id) {
+  await remove(id);
+  pedidos = pedidos.filter(p => p.id !== id);
+  if (selId === id) selId = null;
+  render();
+}
+
+function seleccionar(id) {
+  selId = selId === id ? null : id;
+  renderLista();
+  renderPins();
+  if (selId) {
+    const p = pedidos.find(x => x.id === id);
+    if (p && markersMap[id]) {
+      map.setView([p.lat, p.lng], 14);
+      markersMap[id].openPopup();
+    }
+  }
+}
+
+// ─── RENDER ────────────────────────────────────────────────────
+function render() {
+  buildTabs();
+  renderStats();
+  renderLista();
+  renderPins();
+}
+
+function buildTabs() {
+  const tabs = document.getElementById('week-tabs');
+  tabs.innerHTML = semana.map(d => {
+    const key = fmtDate(d);
+    const cnt = pedidos.filter(p => p.fecha === key && !p.done).length;
+    const active = key === diaActivo;
+    return `<div class="day-tab${active ? ' active' : ''}" onclick="setDia('${key}')">
+      <span class="cnt">${cnt > 0 ? cnt : '–'}</span>
+      <span class="name">${DIAS_ES[d.getDay()]} ${d.getDate()}</span>
+    </div>`;
+  }).join('');
+}
+
+function buildDiaSelect() {
+  const sel = document.getElementById('f-dia');
+  sel.innerHTML = semana.map(d => {
+    const key = fmtDate(d);
+    return `<option value="${key}"${key === hoyKey ? ' selected' : ''}>${DIAS_ES[d.getDay()]} ${d.getDate()}</option>`;
+  }).join('');
+}
+
+function renderStats() {
+  const activos = pedidos.filter(p => p.fecha === diaActivo && !p.done);
+  document.getElementById('cnt-e').textContent = activos.filter(p => p.tipo === 'entrega').length;
+  document.getElementById('cnt-r').textContent = activos.filter(p => p.tipo === 'reclamo').length;
+  document.getElementById('cnt-t').textContent = activos.filter(p => p.tipo === 'retiro').length;
+  const total = activos.length;
+  document.getElementById('footer-txt').textContent = total + ' parada' + (total !== 1 ? 's' : '') + ' pendientes';
+}
+
+function renderLista() {
+  const del_dia = pedidos.filter(p => p.fecha === diaActivo);
+  const lista = document.getElementById('lista');
+  if (!del_dia.length) {
+    lista.innerHTML = '<div class="empty">Sin pedidos este día</div>';
+    return;
+  }
+  lista.innerHTML = del_dia.map(p => `
+    <div class="item${selId === p.id ? ' selected' : ''}${p.done ? ' done' : ''}" onclick="seleccionar(${p.id})">
+      <div class="item-actions">
+        ${!p.done
+          ? `<button class="btn-done" onclick="event.stopPropagation();marcarDone(${p.id})" title="Marcar entregado">✓</button>`
+          : `<span style="font-size:11px;color:#2d9d6e;padding:2px 4px">✓</span>`}
+        <button class="btn-del" onclick="event.stopPropagation();eliminar(${p.id})">×</button>
+      </div>
+      <div class="item-top">
+        <span class="badge ${p.tipo}">${p.tipo === 'entrega' ? 'Entrega' : p.tipo === 'reclamo' ? 'Reclamo' : 'Retiro'}</span>
+        <span class="item-name">${p.nombre}</span>
+      </div>
+      <div class="item-addr">${p.direccion}</div>
+      <div class="item-equip">${p.equipo}L${p.nota ? ' · ' + p.nota : ''}</div>
+    </div>`).join('');
+}
+
+function renderPins() {
+  // Limpiar marcadores anteriores
+  Object.values(markersMap).forEach(m => map.removeLayer(m));
+  markersMap = {};
+
+  const activos = pedidos.filter(p => p.fecha === diaActivo && !p.done && p.lat && p.lng);
+  activos.forEach(p => {
+    const icon = makeIcon(p.tipo, p.equipo);
+    const marker = L.marker([p.lat, p.lng], { icon }).addTo(map);
+    const tipo = p.tipo === 'entrega' ? 'Entrega' : p.tipo === 'reclamo' ? 'Reclamo' : 'Retiro';
+    marker.bindPopup(`<strong>${p.nombre}</strong><br><span style="font-size:12px;color:#666">${p.direccion}</span><br><span style="font-size:11px;color:#999">${tipo} · ${p.equipo}L${p.nota ? ' · ' + p.nota : ''}</span>`);
+    marker.on('click', () => seleccionar(p.id));
+    markersMap[p.id] = marker;
+  });
+
+  if (activos.length > 0) {
+    const group = L.featureGroup(Object.values(markersMap));
+    map.fitBounds(group.getBounds().pad(0.15));
+  }
+}
+
+function setDia(key) {
+  diaActivo = key;
+  selId = null;
+  render();
+}
+
+function setStatus(msg, hideAfter = 0) {
+  const bar = document.getElementById('status-bar');
+  bar.textContent = msg;
+  bar.style.opacity = '1';
+  if (hideAfter) setTimeout(() => { bar.style.opacity = '0'; }, hideAfter);
+}
+
+function optimizarRecorrido() {
+  const activos = pedidos.filter(p => p.fecha === diaActivo && !p.done);
+  if (!activos.length) { alert('No hay pedidos pendientes para hoy.'); return; }
+  const lista = activos.map((p, i) =>
+    `${i + 1}. ${p.tipo.toUpperCase()} - ${p.nombre} - ${p.direccion} (${p.equipo}L)${p.nota ? ' - ' + p.nota : ''}`
+  ).join('\n');
+  const msg = `Tengo estos pedidos pendientes para hoy en Friofrias, todos en AMBA. Ayudame a ordenarlos en el recorrido más eficiente para el camión, partiendo desde Lomas de Zamora:\n${lista}`;
+  // Copia al portapapeles
+  navigator.clipboard.writeText(msg).then(() => {
+    alert('Recorrido copiado al portapapeles. Pegalo en Claude para optimizarlo.');
+  }).catch(() => {
+    prompt('Copiá este texto y pegalo en Claude:', msg);
+  });
+}
+
+init();
+</script>
+</body>
+</html>

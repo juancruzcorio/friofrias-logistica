@@ -1,0 +1,20 @@
+create table if not exists precios (
+  id         bigint generated always as identity primary key,
+  modelo     text not null unique,
+  costo      numeric not null default 0,
+  precio     numeric not null default 0,
+  updated_at timestamptz default now()
+);
+
+alter table precios enable row level security;
+create policy "precios_libre" on precios for all using (true) with check (true);
+
+insert into precios (modelo, costo, precio) values
+  ('390L', 0, 0),
+  ('390L black', 0, 0),
+  ('470L', 0, 0),
+  ('470L black', 0, 0),
+  ('600L', 0, 0),
+  ('600L black', 0, 0),
+  ('1500L', 0, 0)
+on conflict (modelo) do nothing;

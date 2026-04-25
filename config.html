@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Friofrias · Configuración</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f5f3;color:#1a1a1a;font-size:14px}
+    .app{display:flex;flex-direction:column;min-height:100dvh}
+    .header{background:#fff;border-bottom:1px solid #e5e5e3;padding:10px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .logo{font-size:16px;font-weight:700}.logo span{color:#185FA5}
+    .nav{display:flex;gap:4px;margin-left:auto}
+    .nav a{font-size:12px;padding:5px 12px;border-radius:7px;border:1px solid #e0e0de;background:#fff;color:#555;text-decoration:none}
+    .nav a.active{background:#185FA5;border-color:#185FA5;color:#fff;font-weight:500}
+    .nav a:hover:not(.active){background:#f5f5f3}
+    .content{flex:1;padding:16px;max-width:700px;margin:0 auto;width:100%}
+    .section{background:#fff;border:0.5px solid #e5e5e3;border-radius:12px;padding:16px;margin-bottom:14px}
+    .section h2{font-size:14px;font-weight:500;margin-bottom:4px}
+    .section p{font-size:12px;color:#888;margin-bottom:14px}
+    .modelo-row{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:8px;align-items:center;padding:10px 0;border-bottom:0.5px solid #f5f5f3}
+    .modelo-row:last-child{border-bottom:none}
+    .modelo-nombre{font-size:13px;font-weight:500}
+    .modelo-input{font-size:13px;padding:6px 9px;border:1px solid #e0e0de;border-radius:7px;background:#fff;color:#1a1a1a;outline:none;width:100%}
+    .modelo-input:focus{border-color:#185FA5}
+    .btn-save-row{font-size:11px;padding:5px 10px;border-radius:6px;border:none;background:#185FA5;color:#fff;cursor:pointer;white-space:nowrap}
+    .btn-save-row:hover{background:#0C447C}
+    .btn-save-row.saved{background:#27ae60}
+    .header-cols{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:8px;padding-bottom:6px;border-bottom:1px solid #e5e5e3;margin-bottom:4px}
+    .header-cols span{font-size:10px;color:#888;font-weight:500}
+    .margen{font-size:11px;color:#aaa;text-align:right;margin-top:2px}
+    .margen.ok{color:#27ae60}
+    .status-msg{font-size:12px;padding:8px 12px;border-radius:7px;margin-bottom:12px;display:none}
+    .status-msg.ok{background:#E1F5EE;color:#085041;display:block}
+    .status-msg.err{background:#FCEBEB;color:#791F1F;display:block}
+    .section-gastos{background:#fff;border:0.5px solid #e5e5e3;border-radius:12px;padding:16px;margin-bottom:14px}
+    .section-gastos h2{font-size:14px;font-weight:500;margin-bottom:4px}
+    .section-gastos p{font-size:12px;color:#888;margin-bottom:14px}
+    .gasto-fijo-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:0.5px solid #f5f5f3}
+    .gasto-fijo-row:last-child{border-bottom:none}
+    .gasto-label{flex:1;font-size:13px}
+    .gasto-input{font-size:13px;padding:6px 9px;border:1px solid #e0e0de;border-radius:7px;width:140px;outline:none}
+    .gasto-input:focus{border-color:#185FA5}
+    .btn-save-all{font-size:13px;font-weight:500;padding:10px;border-radius:7px;border:none;background:#1a1a1a;color:#fff;cursor:pointer;width:100%;margin-top:8px}
+    .btn-save-all:hover{background:#333}
+    .resumen{background:#f8f8f6;border-radius:8px;padding:10px 12px;margin-top:12px;font-size:12px;color:#555;line-height:1.8}
+    .resumen b{color:#1a1a1a}
+  </style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="logo">Frio<span>frias</span></div>
+    <nav class="nav">
+      <a href="index.html">Logística</a>
+      <a href="finanzas.html">Finanzas</a>
+      <a href="config.html" class="active">Configuración</a>
+    </nav>
+  </div>
+  <div class="content">
+    <div id="status-msg" class="status-msg"></div>
+
+    <div class="section">
+      <h2>Precios por modelo de heladera</h2>
+      <p>Cargá el costo de compra y el precio de venta de cada modelo. Se usa para calcular la ganancia automáticamente.</p>
+      <div class="header-cols">
+        <span>Modelo</span>
+        <span>Costo de compra ($)</span>
+        <span>Precio de venta ($)</span>
+        <span></span>
+      </div>
+      <div id="precios-lista"></div>
+    </div>
+
+    <div class="section-gastos">
+      <h2>Gastos fijos mensuales</h2>
+      <p>Estos gastos se descuentan automáticamente cada mes para calcular la ganancia neta real.</p>
+      <div class="gasto-fijo-row">
+        <span class="gasto-label">Sueldos totales</span>
+        <input class="gasto-input" type="number" id="gf-sueldos" placeholder="$0"/>
+      </div>
+      <div class="gasto-fijo-row">
+        <span class="gasto-label">Alquiler / depósito</span>
+        <input class="gasto-input" type="number" id="gf-alquiler" placeholder="$0"/>
+      </div>
+      <div class="gasto-fijo-row">
+        <span class="gasto-label">Combustible estimado</span>
+        <input class="gasto-input" type="number" id="gf-combustible" placeholder="$0"/>
+      </div>
+      <div class="gasto-fijo-row">
+        <span class="gasto-label">Servicios / impuestos</span>
+        <input class="gasto-input" type="number" id="gf-servicios" placeholder="$0"/>
+      </div>
+      <div class="gasto-fijo-row">
+        <span class="gasto-label">Otros gastos fijos</span>
+        <input class="gasto-input" type="number" id="gf-otros" placeholder="$0"/>
+      </div>
+      <button class="btn-save-all" onclick="guardarGastosFijos()">Guardar gastos fijos</button>
+      <div class="resumen" id="resumen-gastos" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SUPA_URL="https://ecluhrcrbcybhfucbbst.supabase.co";
+const SUPA_KEY="sb_publishable_1MelpVpFmU-Sv-qaZbajhA_DJDF_UQc";
+async function sb(method,table,body,query=""){
+  const r=await fetch(`${SUPA_URL}/rest/v1/${table}${query}`,{method,headers:{"apikey":SUPA_KEY,"Authorization":`Bearer ${SUPA_KEY}`,"Content-Type":"application/json","Prefer":method==="POST"?"return=representation":"return=minimal"},body:body?JSON.stringify(body):undefined});
+  if(method==="GET"||method==="POST")return r.json();
+  return r;
+}
+
+function fmt(n){return "$"+Math.round(n||0).toLocaleString("es-AR")}
+
+async function cargarPrecios(){
+  const data=await sb("GET","precios",null,"?order=modelo.asc");
+  const lista=document.getElementById("precios-lista");
+  if(!Array.isArray(data)||!data.length){lista.innerHTML='<p style="color:#aaa;font-size:12px;padding:12px 0">No se encontraron modelos.</p>';return}
+  lista.innerHTML=data.map(p=>{
+    const margen=p.precio>0&&p.costo>0?((p.precio-p.costo)/p.precio*100).toFixed(1):null;
+    return `<div class="modelo-row" id="row-${p.id}">
+      <div>
+        <div class="modelo-nombre">${p.modelo}</div>
+        ${margen?`<div class="margen ok">Margen: ${margen}%</div>`:'<div class="margen">Sin precio cargado</div>'}
+      </div>
+      <input class="modelo-input" type="number" id="costo-${p.id}" value="${p.costo||""}" placeholder="ej: 300000"/>
+      <input class="modelo-input" type="number" id="precio-${p.id}" value="${p.precio||""}" placeholder="ej: 600000"/>
+      <button class="btn-save-row" onclick="guardarPrecio(${p.id},'${p.modelo}')">Guardar</button>
+    </div>`;
+  }).join("");
+}
+
+async function guardarPrecio(id,modelo){
+  const costo=parseFloat(document.getElementById("costo-"+id).value)||0;
+  const precio=parseFloat(document.getElementById("precio-"+id).value)||0;
+  if(precio<costo){mostrarStatus("El precio de venta no puede ser menor al costo.","err");return}
+  await sb("PATCH","precios",{costo,precio,updated_at:new Date().toISOString()},`?id=eq.${id}`);
+  const btn=document.querySelector(`#row-${id} .btn-save-row`);
+  btn.textContent="Guardado";btn.classList.add("saved");
+  setTimeout(()=>{btn.textContent="Guardar";btn.classList.remove("saved");},2000);
+  cargarPrecios();
+  mostrarStatus(`Precio de ${modelo} actualizado correctamente.`,"ok");
+}
+
+async function guardarGastosFijos(){
+  const gastos={
+    sueldos:parseFloat(document.getElementById("gf-sueldos").value)||0,
+    alquiler:parseFloat(document.getElementById("gf-alquiler").value)||0,
+    combustible:parseFloat(document.getElementById("gf-combustible").value)||0,
+    servicios:parseFloat(document.getElementById("gf-servicios").value)||0,
+    otros:parseFloat(document.getElementById("gf-otros").value)||0
+  };
+  const total=Object.values(gastos).reduce((s,v)=>s+v,0);
+  localStorage.setItem("gastos_fijos",JSON.stringify(gastos));
+  const res=document.getElementById("resumen-gastos");
+  res.style.display="block";
+  res.innerHTML=`<b>Gastos fijos mensuales:</b><br>
+    Sueldos: ${fmt(gastos.sueldos)}<br>
+    Alquiler: ${fmt(gastos.alquiler)}<br>
+    Combustible: ${fmt(gastos.combustible)}<br>
+    Servicios: ${fmt(gastos.servicios)}<br>
+    Otros: ${fmt(gastos.otros)}<br>
+    <b>Total mensual: ${fmt(total)}</b>`;
+  mostrarStatus("Gastos fijos guardados correctamente.","ok");
+}
+
+function cargarGastosFijos(){
+  const g=JSON.parse(localStorage.getItem("gastos_fijos")||"{}");
+  if(g.sueldos)document.getElementById("gf-sueldos").value=g.sueldos;
+  if(g.alquiler)document.getElementById("gf-alquiler").value=g.alquiler;
+  if(g.combustible)document.getElementById("gf-combustible").value=g.combustible;
+  if(g.servicios)document.getElementById("gf-servicios").value=g.servicios;
+  if(g.otros)document.getElementById("gf-otros").value=g.otros;
+  const total=Object.values(g).reduce((s,v)=>s+(parseFloat(v)||0),0);
+  if(total>0){
+    const res=document.getElementById("resumen-gastos");
+    res.style.display="block";
+    res.innerHTML=`<b>Total gastos fijos configurados: ${fmt(total)}/mes</b>`;
+  }
+}
+
+function mostrarStatus(msg,tipo){
+  const el=document.getElementById("status-msg");
+  el.textContent=msg;el.className="status-msg "+tipo;
+  setTimeout(()=>{el.style.display="none";},4000);
+}
+
+cargarPrecios();
+cargarGastosFijos();
+</script>
+</body>
+</html>

@@ -6,57 +6,58 @@
 <title>Friofrias · Clientes</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#0f1117;color:#e8e8f0;font-size:14px}
-.header{background:#0f1117;border-bottom:1px solid #252836;padding:10px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.logo{font-size:16px;font-weight:500;color:#fff}.logo span{color:#4d9fff}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f5f3;color:#1a1a1a;font-size:14px}
+.header{background:#fff;border-bottom:1px solid #e5e5e3;padding:0 16px;display:flex;align-items:center;height:48px;flex-wrap:wrap;gap:8px}
+.logo{font-size:16px;font-weight:600;color:#1a1a1a}.logo span{color:#185FA5}
 .nav{display:flex;gap:0;margin-left:auto;overflow-x:auto}
-.nav a{font-size:12px;padding:0 12px;height:36px;display:flex;align-items:center;border-bottom:2px solid transparent;color:#7a7a8c;text-decoration:none;white-space:nowrap}
-.nav a.active{color:#4d9fff;border-bottom-color:#4d9fff;font-weight:500}
-.nav a:hover:not(.active){color:#ccc}
+.nav a{font-size:12px;padding:0 11px;height:48px;display:flex;align-items:center;border-bottom:2px solid transparent;color:#888;text-decoration:none;white-space:nowrap}
+.nav a.active{color:#185FA5;border-bottom-color:#185FA5;font-weight:500}
+.nav a:hover:not(.active){color:#333}
 .content{padding:16px;max-width:960px;margin:0 auto}
 .top-bar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
-.search{flex:1;font-size:13px;padding:7px 12px;border:1px solid #252836;border-radius:8px;background:#161b27;color:#e8e8f0;outline:none;min-width:200px}
-.search:focus{border-color:#4d9fff}
-.btn-nuevo{font-size:12px;font-weight:500;padding:7px 14px;border-radius:8px;border:none;background:#4d9fff;color:#fff;cursor:pointer}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.lista-clientes{display:flex;flex-direction:column;gap:8px}
-.cliente-card{background:#161b27;border:1px solid #252836;border-radius:10px;padding:12px 14px;cursor:pointer;transition:border-color .15s}
-.cliente-card:hover{border-color:#4d9fff}
-.cliente-card.selected{border-color:#4d9fff}
+.search{flex:1;font-size:13px;padding:7px 12px;border:1px solid #e0e0de;border-radius:8px;background:#fff;color:#1a1a1a;outline:none;min-width:200px}
+.search:focus{border-color:#185FA5}
+.btn-nuevo{font-size:12px;font-weight:500;padding:7px 14px;border-radius:8px;border:none;background:#185FA5;color:#fff;cursor:pointer}
+.btn-nuevo:hover{background:#0C447C}
+.grid2{display:grid;grid-template-columns:1fr 380px;gap:14px}
+.lista{display:flex;flex-direction:column;gap:8px}
+.c-card{background:#fff;border:0.5px solid #e5e5e3;border-radius:10px;padding:12px 14px;cursor:pointer;transition:border-color .15s}
+.c-card:hover{border-color:#185FA5}
+.c-card.sel{border-color:#185FA5;border-width:1.5px}
 .c-top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.avatar{width:36px;height:36px;border-radius:50%;background:#0d1e2b;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:#4d9fff;flex-shrink:0}
-.c-name{font-size:13px;font-weight:500;color:#fff}
-.c-meta{font-size:11px;color:#7a7a8c;margin-top:1px}
+.avatar{width:36px;height:36px;border-radius:50%;background:#E6F1FB;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#185FA5;flex-shrink:0}
+.c-name{font-size:13px;font-weight:500;color:#1a1a1a}
+.c-meta{font-size:11px;color:#888;margin-top:1px}
 .c-stats{display:flex;gap:12px;flex-wrap:wrap}
-.cstat{font-size:11px;color:#7a7a8c}
-.cstat b{color:#e8e8f0;font-weight:500}
+.cstat{font-size:11px;color:#888}
+.cstat b{color:#1a1a1a;font-weight:500}
 .badge{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:500}
-.b-verde{background:#0d2b1e;color:#3ecf8e}
-.b-rojo{background:#2b0d0d;color:#f87171}
-.b-azul{background:#0d1e2b;color:#4d9fff}
-.detalle{background:#161b27;border:1px solid #252836;border-radius:10px;padding:14px;position:sticky;top:16px}
-.det-title{font-size:13px;font-weight:500;color:#fff;margin-bottom:12px}
-.det-field{margin-bottom:10px}
-.det-label{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
-.det-val{font-size:13px;color:#e8e8f0}
-.historial-item{padding:8px 0;border-bottom:1px solid #252836}
-.historial-item:last-child{border-bottom:none}
+.b-verde{background:#EAF3DE;color:#27500A}
+.b-rojo{background:#FCEBEB;color:#791F1F}
+.b-azul{background:#E6F1FB;color:#0C447C}
+.detalle{background:#fff;border:0.5px solid #e5e5e3;border-radius:10px;padding:14px;position:sticky;top:16px}
+.det-title{font-size:14px;font-weight:500;color:#1a1a1a;margin-bottom:12px}
+.det-label{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;margin-top:10px}
+.det-val{font-size:13px;color:#1a1a1a}
+.h-item{padding:8px 0;border-bottom:0.5px solid #f5f5f3}
+.h-item:last-child{border-bottom:none}
 .h-top{display:flex;align-items:center;gap:8px;margin-bottom:2px}
-.h-modelo{font-size:12px;font-weight:500;color:#fff}
-.h-fecha{font-size:11px;color:#555;margin-left:auto}
-.h-det{font-size:11px;color:#7a7a8c}
-.form-nuevo{display:flex;flex-direction:column;gap:8px}
-.form-nuevo input,.form-nuevo select,.form-nuevo textarea{width:100%;font-size:12px;padding:7px 9px;border:1px solid #252836;border-radius:7px;background:#0f1117;color:#e8e8f0;outline:none}
-.form-nuevo input:focus{border-color:#4d9fff}
-.form-nuevo textarea{resize:none;height:60px}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.btn-guardar{font-size:12px;font-weight:500;padding:8px;border-radius:7px;border:none;background:#4d9fff;color:#fff;cursor:pointer;width:100%}
-.empty{padding:20px;text-align:center;color:#555;font-size:12px}
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:2000;align-items:center;justify-content:center}
+.h-modelo{font-size:12px;font-weight:500}
+.h-fecha{font-size:11px;color:#aaa;margin-left:auto}
+.h-det{font-size:11px;color:#888}
+.empty{padding:20px;text-align:center;color:#aaa;font-size:12px}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:2000;align-items:center;justify-content:center}
 .modal-bg.open{display:flex}
-.modal{background:#161b27;border:1px solid #252836;border-radius:12px;padding:20px;width:92%;max-width:480px}
-.modal h3{font-size:15px;font-weight:500;color:#fff;margin-bottom:14px}
-.btn-cerrar{padding:8px 16px;border-radius:7px;border:1px solid #252836;background:transparent;color:#7a7a8c;cursor:pointer;font-size:12px;margin-top:10px;width:100%}
+.modal{background:#fff;border-radius:12px;padding:20px;width:92%;max-width:460px}
+.modal h3{font-size:15px;font-weight:500;color:#1a1a1a;margin-bottom:14px}
+.form-n{display:flex;flex-direction:column;gap:8px}
+.form-n input,.form-n select,.form-n textarea{width:100%;font-size:12px;padding:7px 9px;border:1px solid #e0e0de;border-radius:7px;background:#fff;color:#1a1a1a;outline:none}
+.form-n input:focus,.form-n select:focus{border-color:#185FA5}
+.form-n textarea{resize:none;height:60px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn-g{font-size:12px;font-weight:500;padding:8px;border-radius:7px;border:none;background:#185FA5;color:#fff;cursor:pointer;width:100%}
+.btn-g:hover{background:#0C447C}
+.btn-c{font-size:12px;padding:8px;border-radius:7px;border:1px solid #e0e0de;background:#fff;color:#888;cursor:pointer;width:100%;margin-top:4px}
 </style>
 </head>
 <body>
@@ -77,14 +78,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;backgrou
     <button class="btn-nuevo" onclick="abrirNuevo()">+ Nuevo cliente</button>
   </div>
   <div class="grid2">
-    <div class="lista-clientes" id="lista"></div>
-    <div class="detalle" id="detalle"><div class="empty">Seleccioná un cliente para ver el detalle</div></div>
+    <div class="lista" id="lista"></div>
+    <div class="detalle" id="detalle"><div class="empty">Seleccioná un cliente para ver su historial</div></div>
   </div>
 </div>
-<div class="modal-bg" id="modal-nuevo" onclick="cerrarModalBg(event)">
+<div class="modal-bg" id="modal-nuevo" onclick="cerrarBg(event)">
   <div class="modal">
     <h3>Nuevo cliente</h3>
-    <div class="form-nuevo">
+    <div class="form-n">
       <input id="n-nombre" type="text" placeholder="Nombre del cliente o negocio"/>
       <div class="row2">
         <input id="n-tel" type="text" placeholder="Teléfono"/>
@@ -92,8 +93,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;backgrou
       </div>
       <input id="n-dir" type="text" placeholder="Dirección"/>
       <textarea id="n-notas" placeholder="Notas internas..."></textarea>
-      <button class="btn-guardar" onclick="guardarNuevo()">Guardar cliente</button>
-      <button class="btn-cerrar" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn-g" onclick="guardarNuevo()">Guardar cliente</button>
+      <button class="btn-c" onclick="cerrarModal()">Cancelar</button>
     </div>
   </div>
 </div>
@@ -116,58 +117,48 @@ async function cargar(){
 function filtrar(v){busqueda=v.toLowerCase();renderLista();}
 
 function renderLista(){
-  const filtrados=clientes.filter(c=>c.nombre.toLowerCase().includes(busqueda)||(c.telefono||"").includes(busqueda));
+  const fil=clientes.filter(c=>c.nombre.toLowerCase().includes(busqueda)||(c.telefono||"").includes(busqueda));
   const lista=document.getElementById("lista");
-  if(!filtrados.length){lista.innerHTML='<div class="empty">Sin clientes</div>';return}
-  lista.innerHTML=filtrados.map(c=>{
-    const initials=c.nombre.split(" ").slice(0,2).map(w=>w[0]).join("").toUpperCase();
-    const tieneDeuda=(c.deuda||0)>0;
-    return `<div class="cliente-card${selId===c.id?" selected":""}" onclick="seleccionar(${c.id})">
+  if(!fil.length){lista.innerHTML='<div class="empty">Sin clientes</div>';return}
+  lista.innerHTML=fil.map(c=>{
+    const ini=c.nombre.split(" ").slice(0,2).map(w=>w[0]).join("").toUpperCase();
+    const deuda=(c.deuda||0)>0;
+    return `<div class="c-card${selId===c.id?" sel":""}" onclick="seleccionar(${c.id})">
       <div class="c-top">
-        <div class="avatar">${initials}</div>
-        <div><div class="c-name">${c.nombre}</div><div class="c-meta">${c.tipo_negocio||""} ${c.direccion?"· "+c.direccion:""}</div></div>
-        ${tieneDeuda?`<span class="badge b-rojo" style="margin-left:auto">Debe ${fmt(c.deuda)}</span>`:'<span class="badge b-verde" style="margin-left:auto">Al día</span>'}
+        <div class="avatar">${ini}</div>
+        <div><div class="c-name">${c.nombre}</div><div class="c-meta">${c.tipo_negocio||""}${c.direccion?" · "+c.direccion:""}</div></div>
+        ${deuda?`<span class="badge b-rojo" style="margin-left:auto">Debe ${fmt(c.deuda)}</span>`:'<span class="badge b-verde" style="margin-left:auto">Al día</span>'}
       </div>
-      <div class="c-stats">
-        ${c.telefono?`<div class="cstat">Tel: <b>${c.telefono}</b></div>`:""}
-      </div>
+      <div class="c-stats">${c.telefono?`<div class="cstat">📞 <b>${c.telefono}</b></div>`:""}</div>
     </div>`;
   }).join("");
 }
 
 async function seleccionar(id){
-  selId=id;
-  renderLista();
-  const c=clientes.find(x=>x.id===id);
-  if(!c)return;
+  selId=id;renderLista();
+  const c=clientes.find(x=>x.id===id);if(!c)return;
   const ventas=await sb("GET","ventas",null,"?cliente_nombre=eq."+encodeURIComponent(c.nombre)+"&order=fecha.desc&limit=10");
-  const ventasArr=Array.isArray(ventas)?ventas:[];
-  const totalCompras=ventasArr.reduce((s,v)=>s+(parseFloat(v.precio_unitario||0)*parseInt(v.cantidad||1)),0);
-  const initials=c.nombre.split(" ").slice(0,2).map(w=>w[0]).join("").toUpperCase();
+  const vs=Array.isArray(ventas)?ventas:[];
+  const totalH=vs.reduce((s,v)=>s+(parseFloat(v.precio_unitario||0)*parseInt(v.cantidad||1)),0);
+  const ini=c.nombre.split(" ").slice(0,2).map(w=>w[0]).join("").toUpperCase();
   document.getElementById("detalle").innerHTML=`
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-      <div class="avatar" style="width:44px;height:44px;font-size:14px">${initials}</div>
-      <div><div style="font-size:15px;font-weight:500;color:#fff">${c.nombre}</div><div style="font-size:12px;color:#7a7a8c">${c.tipo_negocio||""}</div></div>
+      <div class="avatar" style="width:44px;height:44px;font-size:14px">${ini}</div>
+      <div><div style="font-size:15px;font-weight:500">${c.nombre}</div><div style="font-size:12px;color:#888">${c.tipo_negocio||""}</div></div>
     </div>
-    <div class="det-field"><div class="det-label">Teléfono</div><div class="det-val">${c.telefono||"—"}</div></div>
-    <div class="det-field"><div class="det-label">Dirección</div><div class="det-val">${c.direccion||"—"}</div></div>
-    <div class="det-field"><div class="det-label">Deuda pendiente</div><div class="det-val" style="color:${(c.deuda||0)>0?"#f87171":"#3ecf8e"}">${fmt(c.deuda)}</div></div>
-    <div class="det-field"><div class="det-label">Total histórico</div><div class="det-val" style="color:#4d9fff">${fmt(totalCompras)}</div></div>
-    ${c.notas?`<div class="det-field"><div class="det-label">Notas</div><div class="det-val">${c.notas}</div></div>`:""}
-    <div style="font-size:11px;color:#555;text-transform:uppercase;letter-spacing:.04em;margin:12px 0 8px">Historial de compras</div>
-    ${ventasArr.length?ventasArr.map(v=>{
-      const d=new Date(v.fecha+"T12:00:00");
-      return `<div class="historial-item">
-        <div class="h-top"><span class="h-modelo">${v.modelo}${v.cantidad>1?" x"+v.cantidad:""}</span><span class="h-fecha">${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()%100}</span></div>
-        <div class="h-det">${fmt(parseFloat(v.precio_unitario||0)*parseInt(v.cantidad||1))} · ${v.forma_pago||""}</div>
-      </div>`;
-    }).join(""):'<div class="empty">Sin ventas registradas</div>'}
+    <div class="det-label">Teléfono</div><div class="det-val">${c.telefono||"—"}</div>
+    <div class="det-label">Dirección</div><div class="det-val">${c.direccion||"—"}</div>
+    <div class="det-label">Deuda pendiente</div><div class="det-val" style="color:${(c.deuda||0)>0?"#e24b4a":"#27ae60"};font-weight:500">${fmt(c.deuda)}</div>
+    <div class="det-label">Total histórico</div><div class="det-val" style="color:#185FA5;font-weight:500">${fmt(totalH)}</div>
+    ${c.notas?`<div class="det-label">Notas</div><div class="det-val">${c.notas}</div>`:""}
+    <div class="det-label" style="margin-top:14px">Historial de compras</div>
+    ${vs.length?vs.map(v=>{const d=new Date(v.fecha+"T12:00:00");return`<div class="h-item"><div class="h-top"><span class="h-modelo">${v.modelo}${v.cantidad>1?" x"+v.cantidad:""}</span><span class="h-fecha">${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()%100}</span></div><div class="h-det">${fmt(parseFloat(v.precio_unitario||0)*parseInt(v.cantidad||1))} · ${v.forma_pago||""}</div></div>`;}).join(""):'<div class="empty">Sin ventas registradas</div>'}
   `;
 }
 
 function abrirNuevo(){document.getElementById("modal-nuevo").classList.add("open")}
 function cerrarModal(){document.getElementById("modal-nuevo").classList.remove("open")}
-function cerrarModalBg(e){if(e.target===document.getElementById("modal-nuevo"))cerrarModal()}
+function cerrarBg(e){if(e.target===document.getElementById("modal-nuevo"))cerrarModal()}
 
 async function guardarNuevo(){
   const nombre=document.getElementById("n-nombre").value.trim();

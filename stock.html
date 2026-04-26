@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Friofrias · Stock</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#0f1117;color:#e8e8f0;font-size:14px}
+.header{background:#0f1117;border-bottom:1px solid #252836;padding:10px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.logo{font-size:16px;font-weight:500;color:#fff}.logo span{color:#4d9fff}
+.nav{display:flex;gap:0;margin-left:auto;overflow-x:auto}
+.nav a{font-size:12px;padding:0 12px;height:36px;display:flex;align-items:center;border-bottom:2px solid transparent;color:#7a7a8c;text-decoration:none;white-space:nowrap}
+.nav a.active{color:#4d9fff;border-bottom-color:#4d9fff;font-weight:500}
+.nav a:hover:not(.active){color:#ccc}
+.content{padding:16px;max-width:960px;margin:0 auto}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.stat{background:#161b27;border:1px solid #252836;border-radius:10px;padding:12px 14px}
+.stat-l{font-size:11px;color:#7a7a8c;margin-bottom:4px}
+.stat-n{font-size:22px;font-weight:500}
+.stat-sub{font-size:10px;color:#555;margin-top:2px}
+.n-azul{color:#4d9fff}.n-verde{color:#3ecf8e}.n-rojo{color:#f87171}.n-amber{color:#fbbf24}
+.alertas{margin-bottom:16px}
+.alerta{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#2b1e0d;border:1px solid #3d2d0d;border-radius:8px;margin-bottom:6px}
+.alerta-dot{width:6px;height:6px;border-radius:50%;background:#fbbf24;flex-shrink:0}
+.alerta-txt{font-size:12px;color:#fbbf24;flex:1}
+.card{background:#161b27;border:1px solid #252836;border-radius:12px;padding:14px 16px;margin-bottom:16px}
+.card-title{font-size:12px;font-weight:500;color:#7a7a8c;margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em;display:flex;align-items:center;justify-content:space-between}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{text-align:left;font-size:10px;font-weight:500;color:#555;padding:6px 8px;border-bottom:1px solid #252836;text-transform:uppercase;letter-spacing:.04em}
+.tbl td{padding:8px;border-bottom:1px solid #1a1f2e;color:#e8e8f0;vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:#0f1117}
+.num-input{background:#0f1117;border:1px solid #252836;border-radius:6px;padding:4px 8px;font-size:12px;color:#e8e8f0;width:70px;outline:none;text-align:center}
+.num-input:focus{border-color:#4d9fff}
+.btn-save{font-size:11px;padding:4px 10px;border-radius:6px;border:none;background:#4d9fff;color:#fff;cursor:pointer}
+.btn-save:hover{background:#2d7fe0}
+.btn-save.saved{background:#3ecf8e;color:#0f1117}
+.badge{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:500}
+.b-verde{background:#0d2b1e;color:#3ecf8e}
+.b-rojo{background:#2b0d0d;color:#f87171}
+.b-amber{background:#2b1e0d;color:#fbbf24}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.form-rep{display:flex;flex-direction:column;gap:7px}
+.form-rep input,.form-rep select{width:100%;font-size:12px;padding:6px 8px;border:1px solid #252836;border-radius:7px;background:#0f1117;color:#e8e8f0;outline:none}
+.form-rep input:focus{border-color:#4d9fff}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn-add{font-size:12px;font-weight:500;padding:8px;border-radius:7px;border:none;background:#4d9fff;color:#fff;cursor:pointer;width:100%}
+.empty{padding:16px;text-align:center;color:#555;font-size:12px}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="logo">Frio<span>frias</span></div>
+  <nav class="nav">
+    <a href="index.html">Logística</a>
+    <a href="finanzas.html">Finanzas</a>
+    <a href="stock.html" class="active">Stock</a>
+    <a href="clientes.html">Clientes</a>
+    <a href="performance.html">Performance</a>
+    <a href="config.html">Config</a>
+  </nav>
+</div>
+<div class="content">
+  <div class="stats">
+    <div class="stat"><div class="stat-l">Total disponibles</div><div class="stat-n n-azul" id="s-total">0</div><div class="stat-sub">heladeras en depósito</div></div>
+    <div class="stat"><div class="stat-l">En reparación</div><div class="stat-n n-amber" id="s-rep">0</div><div class="stat-sub">estimado 3-5 días</div></div>
+    <div class="stat"><div class="stat-l">Alertas</div><div class="stat-n n-rojo" id="s-alert">0</div><div class="stat-sub">stock bajo</div></div>
+    <div class="stat"><div class="stat-l">Valor en stock</div><div class="stat-n n-verde" id="s-valor">$0</div><div class="stat-sub">a precio de costo</div></div>
+  </div>
+  <div class="alertas" id="alertas"></div>
+  <div class="card">
+    <div class="card-title">Inventario por modelo</div>
+    <table class="tbl">
+      <thead><tr><th>Modelo</th><th>Disponibles</th><th>En reparación</th><th>Costo</th><th>Precio venta</th><th>Margen</th><th></th></tr></thead>
+      <tbody id="stock-tabla"></tbody>
+    </table>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">Repuestos en stock</div>
+      <table class="tbl" id="rep-tabla">
+        <thead><tr><th>Nombre</th><th>Categoría</th><th>Stock</th><th>Costo</th></tr></thead>
+        <tbody id="rep-tbody"></tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">Agregar repuesto</div>
+      <div class="form-rep">
+        <input id="r-nombre" type="text" placeholder="Nombre del repuesto"/>
+        <div class="row2">
+          <select id="r-cat">
+            <option value="compresor">Compresor</option>
+            <option value="gas">Gas refrigerante</option>
+            <option value="termostato">Termostato</option>
+            <option value="ventilador">Ventilador</option>
+            <option value="puerta">Puerta / junta</option>
+            <option value="electrico">Eléctrico</option>
+            <option value="otro">Otro</option>
+          </select>
+          <input id="r-proveedor" type="text" placeholder="Proveedor"/>
+        </div>
+        <div class="row2">
+          <input id="r-stock" type="number" placeholder="Cantidad"/>
+          <input id="r-costo" type="number" placeholder="Costo $"/>
+        </div>
+        <button class="btn-add" onclick="agregarRepuesto()">+ Agregar repuesto</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+const SU="https://ecluhrcrbcybhfucbbst.supabase.co";
+const SK="sb_publishable_1MelpVpFmU-Sv-qaZbajhA_DJDF_UQc";
+async function sb(m,t,b,q=""){
+  const r=await fetch(`${SU}/rest/v1/${t}${q}`,{method:m,headers:{"apikey":SK,"Authorization":`Bearer ${SK}`,"Content-Type":"application/json","Prefer":m==="POST"?"return=representation":"return=minimal"},body:b?JSON.stringify(b):undefined});
+  if(m==="GET"||m==="POST")return r.json();return r;
+}
+function fmt(n){return "$"+Math.round(n||0).toLocaleString("es-AR")}
+
+async function cargar(){
+  const [stk,reps]=await Promise.all([
+    sb("GET","stock",null,"?order=modelo.asc"),
+    sb("GET","repuestos",null,"?order=categoria.asc,nombre.asc")
+  ]);
+  if(!Array.isArray(stk))return;
+  const total=stk.reduce((s,m)=>s+(m.disponibles||0),0);
+  const enRep=stk.reduce((s,m)=>s+(m.en_reparacion||0),0);
+  const alerts=stk.filter(m=>(m.disponibles||0)<=2&&(m.disponibles||0)>=0).length;
+  const valor=stk.reduce((s,m)=>s+(m.disponibles||0)*(m.costo||0),0);
+  document.getElementById("s-total").textContent=total;
+  document.getElementById("s-rep").textContent=enRep;
+  document.getElementById("s-alert").textContent=alerts;
+  document.getElementById("s-valor").textContent=fmt(valor);
+  const alertDiv=document.getElementById("alertas");
+  alertDiv.innerHTML=stk.filter(m=>(m.disponibles||0)<=2).map(m=>`<div class="alerta"><div class="alerta-dot"></div><div class="alerta-txt">Stock bajo: ${m.modelo} — ${m.disponibles||0} unidades disponibles</div></div>`).join("");
+  document.getElementById("stock-tabla").innerHTML=stk.map(s=>{
+    const margen=s.precio>0&&s.costo>0?Math.round((s.precio-s.costo)/s.precio*100):0;
+    const disp=s.disponibles||0;
+    const dispColor=disp<=2?"#f87171":disp<=5?"#fbbf24":"#3ecf8e";
+    return `<tr>
+      <td style="font-weight:500;color:#fff">${s.modelo}</td>
+      <td><input class="num-input" type="number" value="${disp}" min="0" id="disp-${s.id}" style="color:${dispColor}"/></td>
+      <td><input class="num-input" type="number" value="${s.en_reparacion||0}" min="0" id="rep-${s.id}"/></td>
+      <td><input class="num-input" type="number" value="${s.costo||0}" min="0" id="cost-${s.id}" style="width:90px"/></td>
+      <td><input class="num-input" type="number" value="${s.precio||0}" min="0" id="prec-${s.id}" style="width:90px"/></td>
+      <td style="color:${margen>0?"#3ecf8e":"#555"};font-weight:500">${margen>0?margen+"%":"—"}</td>
+      <td><button class="btn-save" id="save-${s.id}" onclick="guardarModelo(${s.id})">Guardar</button></td>
+    </tr>`;
+  }).join("");
+  if(!Array.isArray(reps)||!reps.length){
+    document.getElementById("rep-tbody").innerHTML='<tr><td colspan="4" class="empty">Sin repuestos cargados</td></tr>';return;
+  }
+  document.getElementById("rep-tbody").innerHTML=reps.map(r=>`<tr><td>${r.nombre}</td><td><span class="badge b-amber">${r.categoria}</span></td><td style="color:${(r.stock||0)===0?"#f87171":"#e8e8f0"}">${r.stock||0}</td><td style="color:#7a7a8c">${fmt(r.costo)}</td></tr>`).join("");
+}
+
+async function guardarModelo(id){
+  const disp=parseInt(document.getElementById("disp-"+id).value)||0;
+  const rep=parseInt(document.getElementById("rep-"+id).value)||0;
+  const costo=parseFloat(document.getElementById("cost-"+id).value)||0;
+  const precio=parseFloat(document.getElementById("prec-"+id).value)||0;
+  await sb("PATCH","stock",{disponibles:disp,en_reparacion:rep,costo,precio,updated_at:new Date().toISOString()},"?id=eq."+id);
+  const btn=document.getElementById("save-"+id);
+  btn.textContent="Guardado";btn.classList.add("saved");
+  setTimeout(()=>{btn.textContent="Guardar";btn.classList.remove("saved");cargar();},1500);
+}
+
+async function agregarRepuesto(){
+  const nombre=document.getElementById("r-nombre").value.trim();
+  if(!nombre)return;
+  await sb("POST","repuestos",{nombre,categoria:document.getElementById("r-cat").value,proveedor:document.getElementById("r-proveedor").value.trim(),stock:parseInt(document.getElementById("r-stock").value)||0,costo:parseFloat(document.getElementById("r-costo").value)||0});
+  ["r-nombre","r-proveedor","r-stock","r-costo"].forEach(id=>document.getElementById(id).value="");
+  cargar();
+}
+
+cargar();setInterval(cargar,60000);
+</script>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Friofrias · Clientes</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#0f1117;color:#e8e8f0;font-size:14px}
+.header{background:#0f1117;border-bottom:1px solid #252836;padding:10px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.logo{font-size:16px;font-weight:500;color:#fff}.logo span{color:#4d9fff}
+.nav{display:flex;gap:0;margin-left:auto;overflow-x:auto}
+.nav a{font-size:12px;padding:0 12px;height:36px;display:flex;align-items:center;border-bottom:2px solid transparent;color:#7a7a8c;text-decoration:none;white-space:nowrap}
+.nav a.active{color:#4d9fff;border-bottom-color:#4d9fff;font-weight:500}
+.nav a:hover:not(.active){color:#ccc}
+.content{padding:16px;max-width:960px;margin:0 auto}
+.top-bar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.search{flex:1;font-size:13px;padding:7px 12px;border:1px solid #252836;border-radius:8px;background:#161b27;color:#e8e8f0;outline:none;min-width:200px}
+.search:focus{border-color:#4d9fff}
+.btn-nuevo{font-size:12px;font-weight:500;padding:7px 14px;border-radius:8px;border:none;background:#4d9fff;color:#fff;cursor:pointer}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.lista-clientes{display:flex;flex-direction:column;gap:8px}
+.cliente-card{background:#161b27;border:1px solid #252836;border-radius:10px;padding:12px 14px;cursor:pointer;transition:border-color .15s}
+.cliente-card:hover{border-color:#4d9fff}
+.cliente-card.selected{border-color:#4d9fff}
+.c-top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.avatar{width:36px;height:36px;border-radius:50%;background:#0d1e2b;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:#4d9fff;flex-shrink:0}
+.c-name{font-size:13px;font-weight:500;color:#fff}
+.c-meta{font-size:11px;color:#7a7a8c;margin-top:1px}
+.c-stats{display:flex;gap:12px;flex-wrap:wrap}
+.cstat{font-size:11px;color:#7a7a8c}
+.cstat b{color:#e8e8f0;font-weight:500}
+.badge{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:500}
+.b-verde{background:#0d2b1e;color:#3ecf8e}
+.b-rojo{background:#2b0d0d;color:#f87171}
+.b-azul{background:#0d1e2b;color:#4d9fff}
+.detalle{background:#161b27;border:1px solid #252836;border-radius:10px;padding:14px;position:sticky;top:16px}
+.det-title{font-size:13px;font-weight:500;color:#fff;margin-bottom:12px}
+.det-field{margin-bottom:10px}
+.det-label{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
+.det-val{font-size:13px;color:#e8e8f0}
+.historial-item{padding:8px 0;border-bottom:1px solid #252836}
+.historial-item:last-child{border-bottom:none}
+.h-top{display:flex;align-items:center;gap:8px;margin-bottom:2px}
+.h-modelo{font-size:12px;font-weight:500;color:#fff}
+.h-fecha{font-size:11px;color:#555;margin-left:auto}
+.h-det{font-size:11px;color:#7a7a8c}
+.form-nuevo{display:flex;flex-direction:column;gap:8px}
+.form-nuevo input,.form-nuevo select,.form-nuevo textarea{width:100%;font-size:12px;padding:7px 9px;border:1px solid #252836;border-radius:7px;background:#0f1117;color:#e8e8f0;outline:none}
+.form-nuevo input:focus{border-color:#4d9fff}
+.form-nuevo textarea{resize:none;height:60px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn-guardar{font-size:12px;font-weight:500;padding:8px;border-radius:7px;border:none;background:#4d9fff;color:#fff;cursor:pointer;width:100%}
+.empty{padding:20px;text-align:center;color:#555;font-size:12px}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:2000;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:#161b27;border:1px solid #252836;border-radius:12px;padding:20px;width:92%;max-width:480px}
+.modal h3{font-size:15px;font-weight:500;color:#fff;margin-bottom:14px}
+.btn-cerrar{padding:8px 16px;border-radius:7px;border:1px solid #252836;background:transparent;color:#7a7a8c;cursor:pointer;font-size:12px;margin-top:10px;width:100%}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="logo">Frio<span>frias</span></div>
+  <nav class="nav">
+    <a href="index.html">Logística</a>
+    <a href="finanzas.html">Finanzas</a>
+    <a href="stock.html">Stock</a>
+    <a href="clientes.html" class="active">Clientes</a>
+    <a href="performance.html">Performance</a>
+    <a href="config.html">Config</a>
+  </nav>
+</div>
+<div class="content">
+  <div class="top-bar">
+    <input class="search" type="text" placeholder="Buscar cliente..." oninput="filtrar(this.value)"/>
+    <button class="btn-nuevo" onclick="abrirNuevo()">+ Nuevo cliente</button>
+  </div>
+  <div class="grid2">
+    <div class="lista-clientes" id="lista"></div>
+    <div class="detalle" id="detalle"><div class="empty">Seleccioná un cliente para ver el detalle</div></div>
+  </div>
+</div>
+<div class="modal-bg" id="modal-nuevo" onclick="cerrarModalBg(event)">
+  <div class="modal">
+    <h3>Nuevo cliente</h3>
+    <div class="form-nuevo">
+      <input id="n-nombre" type="text" placeholder="Nombre del cliente o negocio"/>
+      <div class="row2">
+        <input id="n-tel" type="text" placeholder="Teléfono"/>
+        <select id="n-tipo"><option value="kiosco">Kiosco</option><option value="almacen">Almacén</option><option value="minimercado">Minimercado</option><option value="gastronomia">Gastronomía</option><option value="otro">Otro</option></select>
+      </div>
+      <input id="n-dir" type="text" placeholder="Dirección"/>
+      <textarea id="n-notas" placeholder="Notas internas..."></textarea>
+      <button class="btn-guardar" onclick="guardarNuevo()">Guardar cliente</button>
+      <button class="btn-cerrar" onclick="cerrarModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+<script>
+const SU="https://ecluhrcrbcybhfucbbst.supabase.co";
+const SK="sb_publishable_1MelpVpFmU-Sv-qaZbajhA_DJDF_UQc";
+async function sb(m,t,b,q=""){
+  const r=await fetch(`${SU}/rest/v1/${t}${q}`,{method:m,headers:{"apikey":SK,"Authorization":`Bearer ${SK}`,"Content-Type":"application/json","Prefer":m==="POST"?"return=representation":"return=minimal"},body:b?JSON.stringify(b):undefined});
+  if(m==="GET"||m==="POST")return r.json();return r;
+}
+function fmt(n){return "$"+Math.round(n||0).toLocaleString("es-AR")}
+let clientes=[],selId=null,busqueda="";
+
+async function cargar(){
+  const data=await sb("GET","clientes",null,"?order=nombre.asc");
+  if(Array.isArray(data))clientes=data;
+  renderLista();
+}
+
+function filtrar(v){busqueda=v.toLowerCase();renderLista();}
+
+function renderLista(){
+  const filtrados=clientes.filter(c=>c.nombre.toLowerCase().includes(busqueda)||(c.telefono||"").includes(busqueda));
+  const lista=document.getElementById("lista");
+  if(!filtrados.length){lista.innerHTML='<div class="empty">Sin clientes</div>';return}
+  lista.innerHTML=filtrados.map(c=>{
+    const initials=c.nombre.split(" ").slice(0,2).map(w=>w[0]).join("").toUpperCase();
+    const tieneDeuda=(c.deuda||0)>0;
+    return `<div class="cliente-card${selId===c.id?" selected":""}" onclick="seleccionar(${c.id})">
+      <div class="c-top">
+        <div class="avatar">${initials}</div>
+        <div><div class="c-name">${c.nombre}</div><div class="c-meta">${c.tipo_negocio||""} ${c.direccion?"· "+c.direccion:""}</div></div>
+        ${tieneDeuda?`<span class="badge b-rojo" style="margin-left:auto">Debe ${fmt(c.deuda)}</span>`:'<span class="badge b-verde" style="margin-left:auto">Al día</span>'}
+      </div>
+      <div class="c-stats">
+        ${c.telefono?`<div class="cstat">Tel: <b>${c.telefono}</b></div>`:""}
+      </div>
+    </div>`;
+  }).join("");
+}
+
+async function seleccionar(id){
+  selId=id;
+  renderLista();
+  const c=clientes.find(x=>x.id===id);
+  if(!c)return;
+  const ventas=await sb("GET","ventas",null,"?cliente_nombre=eq."+encodeURIComponent(c.nombre)+"&order=fecha.desc&limit=10");
+  const ventasArr=Array.isArray(ventas)?ventas:[];
+  const totalCompras=ventasArr.reduce((s,v)=>s+(parseFloat(v.precio_unitario||0)*parseInt(v.cantidad||1)),0);
+  const initials=c.nombre.split(" ").slice(0,2).map(w=>w[0]).join("").toUpperCase();
+  document.getElementById("detalle").innerHTML=`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+      <div class="avatar" style="width:44px;height:44px;font-size:14px">${initials}</div>
+      <div><div style="font-size:15px;font-weight:500;color:#fff">${c.nombre}</div><div style="font-size:12px;color:#7a7a8c">${c.tipo_negocio||""}</div></div>
+    </div>
+    <div class="det-field"><div class="det-label">Teléfono</div><div class="det-val">${c.telefono||"—"}</div></div>
+    <div class="det-field"><div class="det-label">Dirección</div><div class="det-val">${c.direccion||"—"}</div></div>
+    <div class="det-field"><div class="det-label">Deuda pendiente</div><div class="det-val" style="color:${(c.deuda||0)>0?"#f87171":"#3ecf8e"}">${fmt(c.deuda)}</div></div>
+    <div class="det-field"><div class="det-label">Total histórico</div><div class="det-val" style="color:#4d9fff">${fmt(totalCompras)}</div></div>
+    ${c.notas?`<div class="det-field"><div class="det-label">Notas</div><div class="det-val">${c.notas}</div></div>`:""}
+    <div style="font-size:11px;color:#555;text-transform:uppercase;letter-spacing:.04em;margin:12px 0 8px">Historial de compras</div>
+    ${ventasArr.length?ventasArr.map(v=>{
+      const d=new Date(v.fecha+"T12:00:00");
+      return `<div class="historial-item">
+        <div class="h-top"><span class="h-modelo">${v.modelo}${v.cantidad>1?" x"+v.cantidad:""}</span><span class="h-fecha">${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()%100}</span></div>
+        <div class="h-det">${fmt(parseFloat(v.precio_unitario||0)*parseInt(v.cantidad||1))} · ${v.forma_pago||""}</div>
+      </div>`;
+    }).join(""):'<div class="empty">Sin ventas registradas</div>'}
+  `;
+}
+
+function abrirNuevo(){document.getElementById("modal-nuevo").classList.add("open")}
+function cerrarModal(){document.getElementById("modal-nuevo").classList.remove("open")}
+function cerrarModalBg(e){if(e.target===document.getElementById("modal-nuevo"))cerrarModal()}
+
+async function guardarNuevo(){
+  const nombre=document.getElementById("n-nombre").value.trim();
+  if(!nombre)return;
+  await sb("POST","clientes",{nombre,telefono:document.getElementById("n-tel").value.trim(),tipo_negocio:document.getElementById("n-tipo").value,direccion:document.getElementById("n-dir").value.trim(),notas:document.getElementById("n-notas").value.trim(),deuda:0});
+  ["n-nombre","n-tel","n-dir","n-notas"].forEach(id=>document.getElementById(id).value="");
+  cerrarModal();cargar();
+}
+
+cargar();
+</script>
+</body>
+</html>

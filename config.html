@@ -6,40 +6,43 @@
 <title>Friofrias · Config</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#0f1117;color:#e8e8f0;font-size:14px}
-.header{background:#0f1117;border-bottom:1px solid #252836;padding:10px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.logo{font-size:16px;font-weight:500;color:#fff}.logo span{color:#4d9fff}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f5f3;color:#1a1a1a;font-size:14px}
+.header{background:#fff;border-bottom:1px solid #e5e5e3;padding:0 16px;display:flex;align-items:center;height:48px;flex-wrap:wrap;gap:8px}
+.logo{font-size:16px;font-weight:600;color:#1a1a1a}.logo span{color:#185FA5}
 .nav{display:flex;gap:0;margin-left:auto;overflow-x:auto}
-.nav a{font-size:12px;padding:0 12px;height:36px;display:flex;align-items:center;border-bottom:2px solid transparent;color:#7a7a8c;text-decoration:none;white-space:nowrap}
-.nav a.active{color:#4d9fff;border-bottom-color:#4d9fff;font-weight:500}
-.nav a:hover:not(.active){color:#ccc}
+.nav a{font-size:12px;padding:0 11px;height:48px;display:flex;align-items:center;border-bottom:2px solid transparent;color:#888;text-decoration:none;white-space:nowrap}
+.nav a.active{color:#185FA5;border-bottom-color:#185FA5;font-weight:500}
+.nav a:hover:not(.active){color:#333}
 .content{padding:16px;max-width:760px;margin:0 auto}
-.card{background:#161b27;border:1px solid #252836;border-radius:12px;padding:14px 16px;margin-bottom:16px}
-.card-title{font-size:12px;font-weight:500;color:#7a7a8c;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em}
-.card-sub{font-size:12px;color:#555;margin-bottom:14px}
-.tbl-header{display:grid;grid-template-columns:1fr 110px 110px 70px 80px;gap:8px;padding:4px 0 6px;border-bottom:1px solid #252836;margin-bottom:4px}
-.tbl-header span{font-size:10px;font-weight:500;color:#555;text-transform:uppercase;letter-spacing:.04em}
-.precio-row{display:grid;grid-template-columns:1fr 110px 110px 70px 80px;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid #1a1f2e}
-.precio-row:last-child{border-bottom:none}
-.precio-nombre{font-size:13px;font-weight:500;color:#fff}
-.num-input{background:#0f1117;border:1px solid #252836;border-radius:6px;padding:5px 8px;font-size:12px;color:#e8e8f0;width:100%;outline:none;text-align:right}
-.num-input:focus{border-color:#4d9fff}
-.margen{font-size:12px;font-weight:500}
-.btn-save{font-size:11px;padding:4px 10px;border-radius:6px;border:none;background:#4d9fff;color:#fff;cursor:pointer;white-space:nowrap}
-.btn-save:hover{background:#2d7fe0}
-.btn-save.saved{background:#3ecf8e;color:#0f1117}
-.gasto-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #1a1f2e}
-.gasto-row:last-child{border-bottom:none}
-.gasto-label{flex:1;font-size:13px;color:#e8e8f0}
-.gasto-input{background:#0f1117;border:1px solid #252836;border-radius:6px;padding:5px 8px;font-size:12px;color:#e8e8f0;width:140px;outline:none;text-align:right}
-.gasto-input:focus{border-color:#4d9fff}
-.btn-guardar-gastos{font-size:12px;font-weight:500;padding:8px;border-radius:7px;border:none;background:#e8e8f0;color:#0f1117;cursor:pointer;width:100%;margin-top:10px}
-.btn-guardar-gastos:hover{background:#fff}
-.total-gastos{font-size:13px;color:#7a7a8c;padding:10px 0 0;text-align:right}
-.total-gastos b{color:#f87171}
 .msg{font-size:12px;padding:8px 12px;border-radius:7px;margin-bottom:12px;display:none}
-.msg.ok{background:#0d2b1e;color:#3ecf8e;display:block;border:1px solid #1a4a2e}
-.msg.err{background:#2b0d0d;color:#f87171;display:block;border:1px solid #4a1a1a}
+.msg.ok{background:#EAF3DE;color:#27500A;border:1px solid #C0DD97;display:block}
+.msg.err{background:#FCEBEB;color:#791F1F;border:1px solid #F7C1C1;display:block}
+.card{background:#fff;border:0.5px solid #e5e5e3;border-radius:12px;padding:14px 16px;margin-bottom:16px}
+.card-title{font-size:13px;font-weight:500;color:#1a1a1a;margin-bottom:4px}
+.card-sub{font-size:12px;color:#888;margin-bottom:14px}
+.tbl-h{display:grid;grid-template-columns:1fr 110px 110px 70px 80px;gap:8px;padding:4px 0 6px;border-bottom:0.5px solid #f0f0ee;margin-bottom:4px}
+.tbl-h span{font-size:10px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:.04em}
+.precio-row{display:grid;grid-template-columns:1fr 110px 110px 70px 80px;gap:8px;align-items:center;padding:7px 0;border-bottom:0.5px solid #f5f5f3}
+.precio-row:last-child{border-bottom:none}
+.precio-nombre{font-size:13px;font-weight:500;color:#1a1a1a}
+.precio-variante{font-size:11px;color:#888}
+.num-inp{background:#f8f8f6;border:0.5px solid #e0e0de;border-radius:6px;padding:5px 8px;font-size:12px;color:#1a1a1a;width:100%;outline:none;text-align:right}
+.num-inp:focus{border-color:#185FA5;background:#fff}
+.margen-ok{font-size:12px;font-weight:500;color:#27ae60}
+.margen-no{font-size:12px;color:#aaa}
+.btn-save{font-size:11px;padding:4px 10px;border-radius:6px;border:none;background:#185FA5;color:#fff;cursor:pointer;white-space:nowrap}
+.btn-save:hover{background:#0C447C}
+.btn-save.saved{background:#27ae60}
+.gasto-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid #f5f5f3}
+.gasto-row:last-child{border-bottom:none}
+.gasto-label{flex:1;font-size:13px;color:#1a1a1a}
+.gasto-inp{background:#f8f8f6;border:0.5px solid #e0e0de;border-radius:6px;padding:5px 8px;font-size:12px;color:#1a1a1a;width:140px;outline:none;text-align:right}
+.gasto-inp:focus{border-color:#185FA5;background:#fff}
+.total-gf{font-size:13px;color:#888;padding:10px 0 0;text-align:right}
+.total-gf b{color:#e24b4a}
+.btn-guardar{font-size:12px;font-weight:500;padding:9px;border-radius:7px;border:none;background:#1a1a1a;color:#fff;cursor:pointer;width:100%;margin-top:10px}
+.btn-guardar:hover{background:#333}
+.empty{padding:20px;text-align:center;color:#aaa;font-size:12px}
 </style>
 </head>
 <body>
@@ -57,23 +60,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;backgrou
 <div class="content">
   <div id="msg" class="msg"></div>
   <div class="card">
-    <div class="card-title">Precios por modelo</div>
-    <div class="card-sub">Actualizá el costo de compra y precio de venta cuando cambien. Se usa para calcular la ganancia automáticamente.</div>
-    <div class="tbl-header">
-      <span>Modelo</span><span>Costo compra</span><span>Precio venta</span><span>Margen</span><span></span>
-    </div>
-    <div id="precios-lista"></div>
+    <div class="card-title">Precios por modelo y variante</div>
+    <div class="card-sub">Los precios se sincronizan con Stock. Cambios acá se reflejan en todo el sistema.</div>
+    <div class="tbl-h"><span>Modelo</span><span>Costo compra</span><span>Precio venta</span><span>Margen</span><span></span></div>
+    <div id="precios-lista"><div class="empty">Cargando...</div></div>
   </div>
   <div class="card">
     <div class="card-title">Gastos fijos mensuales</div>
-    <div class="card-sub">Se descuentan automáticamente para calcular la ganancia neta real del mes.</div>
-    <div class="gasto-row"><span class="gasto-label">Sueldos totales</span><input class="gasto-input" type="number" id="gf-sueldos" placeholder="0"/></div>
-    <div class="gasto-row"><span class="gasto-label">Alquiler / depósito</span><input class="gasto-input" type="number" id="gf-alquiler" placeholder="0"/></div>
-    <div class="gasto-row"><span class="gasto-label">Combustible estimado</span><input class="gasto-input" type="number" id="gf-combustible" placeholder="0"/></div>
-    <div class="gasto-row"><span class="gasto-label">Servicios / impuestos</span><input class="gasto-input" type="number" id="gf-servicios" placeholder="0"/></div>
-    <div class="gasto-row"><span class="gasto-label">Otros gastos fijos</span><input class="gasto-input" type="number" id="gf-otros" placeholder="0"/></div>
-    <div class="total-gastos">Total mensual: <b id="total-gf">$0</b></div>
-    <button class="btn-guardar-gastos" onclick="guardarGastosFijos()">Guardar gastos fijos</button>
+    <div class="card-sub">Se descuentan automáticamente para calcular la ganancia neta real.</div>
+    <div class="gasto-row"><span class="gasto-label">Sueldos totales</span><input class="gasto-inp" type="number" id="gf-sueldos" placeholder="0" oninput="calcTotal()"/></div>
+    <div class="gasto-row"><span class="gasto-label">Alquiler / depósito</span><input class="gasto-inp" type="number" id="gf-alquiler" placeholder="0" oninput="calcTotal()"/></div>
+    <div class="gasto-row"><span class="gasto-label">Combustible estimado</span><input class="gasto-inp" type="number" id="gf-combustible" placeholder="0" oninput="calcTotal()"/></div>
+    <div class="gasto-row"><span class="gasto-label">Servicios / impuestos</span><input class="gasto-inp" type="number" id="gf-servicios" placeholder="0" oninput="calcTotal()"/></div>
+    <div class="gasto-row"><span class="gasto-label">Otros gastos fijos</span><input class="gasto-inp" type="number" id="gf-otros" placeholder="0" oninput="calcTotal()"/></div>
+    <div class="total-gf">Total mensual: <b id="total-gf">$0</b></div>
+    <button class="btn-guardar" onclick="guardarGastos()">Guardar gastos fijos</button>
   </div>
 </div>
 <script>
@@ -86,55 +87,51 @@ async function sb(m,t,b,q=""){
 function fmt(n){return "$"+Math.round(n||0).toLocaleString("es-AR")}
 
 async function cargarPrecios(){
-  const data=await sb("GET","stock",null,"?order=modelo.asc");
-  if(!Array.isArray(data))return;
+  const data=await sb("GET","stock",null,"?order=modelo.asc,variante.asc");
+  if(!Array.isArray(data)||!data.length){document.getElementById("precios-lista").innerHTML='<div class="empty">Sin modelos cargados. Agregalos desde Stock.</div>';return}
   document.getElementById("precios-lista").innerHTML=data.map(s=>{
     const margen=s.precio>0&&s.costo>0?Math.round((s.precio-s.costo)/s.precio*100):null;
     return `<div class="precio-row" id="row-${s.id}">
-      <div class="precio-nombre">${s.modelo}</div>
-      <input class="num-input" type="number" id="c-${s.id}" value="${s.costo||""}" placeholder="ej: 300000"/>
-      <input class="num-input" type="number" id="p-${s.id}" value="${s.precio||""}" placeholder="ej: 600000"/>
-      <span class="margen" style="color:${margen?margen>30?"#3ecf8e":"#fbbf24":"#555"}">${margen?margen+"%":"—"}</span>
-      <button class="btn-save" id="save-${s.id}" onclick="guardarPrecio(${s.id},'${s.modelo}')">Guardar</button>
+      <div><div class="precio-nombre">${s.modelo}</div><div class="precio-variante">${s.variante||"Normal"}</div></div>
+      <input class="num-inp" type="number" id="c-${s.id}" value="${s.costo||""}" placeholder="0"/>
+      <input class="num-inp" type="number" id="p-${s.id}" value="${s.precio||""}" placeholder="0"/>
+      <span class="${margen?"margen-ok":"margen-no"}">${margen?margen+"%":"—"}</span>
+      <button class="btn-save" id="save-${s.id}" onclick="guardarPrecio(${s.id},'${s.modelo} ${s.variante}')">Guardar</button>
     </div>`;
   }).join("");
 }
 
-async function guardarPrecio(id,modelo){
+async function guardarPrecio(id,nombre){
   const costo=parseFloat(document.getElementById("c-"+id).value)||0;
   const precio=parseFloat(document.getElementById("p-"+id).value)||0;
-  if(precio>0&&precio<costo){mostrarMsg("El precio de venta no puede ser menor al costo.","err");return}
-  await sb("PATCH","stock",{costo,precio,updated_at:new Date().toISOString()},"?id=eq."+id);
+  if(precio>0&&precio<costo){mostrarMsg("El precio no puede ser menor al costo.","err");return}
+  await sb("PATCH","stock",{costo,precio,updated_at:new Date().toISOString()},`?id=eq.${id}`);
   const btn=document.getElementById("save-"+id);
-  btn.textContent="Guardado";btn.classList.add("saved");
+  btn.textContent="✓ Guardado";btn.classList.add("saved");
   setTimeout(()=>{btn.textContent="Guardar";btn.classList.remove("saved");cargarPrecios();},1500);
-  mostrarMsg("Precio de "+modelo+" actualizado.","ok");
+  mostrarMsg(nombre+" actualizado","ok");
 }
 
-async function cargarGastosFijos(){
+async function cargarGastos(){
   const data=await sb("GET","gastos_fijos",null,"?order=categoria.asc");
   if(!Array.isArray(data))return;
   data.forEach(g=>{const el=document.getElementById("gf-"+g.categoria);if(el)el.value=g.monto||"";});
-  calcTotalGF();
+  calcTotal();
 }
 
-function calcTotalGF(){
+function calcTotal(){
   const ids=["sueldos","alquiler","combustible","servicios","otros"];
-  const total=ids.reduce((s,id)=>s+(parseFloat(document.getElementById("gf-"+id)?.value)||0),0);
-  document.getElementById("total-gf").textContent=fmt(total);
+  const t=ids.reduce((s,id)=>s+(parseFloat(document.getElementById("gf-"+id)?.value)||0),0);
+  document.getElementById("total-gf").textContent=fmt(t);
 }
 
-["sueldos","alquiler","combustible","servicios","otros"].forEach(id=>{
-  document.getElementById("gf-"+id)?.addEventListener("input",calcTotalGF);
-});
-
-async function guardarGastosFijos(){
+async function guardarGastos(){
   const cats=["sueldos","alquiler","combustible","servicios","otros"];
   for(const cat of cats){
     const monto=parseFloat(document.getElementById("gf-"+cat)?.value)||0;
-    await sb("PATCH","gastos_fijos",{monto,updated_at:new Date().toISOString()},"?categoria=eq."+cat);
+    await sb("PATCH","gastos_fijos",{monto,updated_at:new Date().toISOString()},`?categoria=eq.${cat}`);
   }
-  mostrarMsg("Gastos fijos guardados correctamente.","ok");
+  mostrarMsg("Gastos fijos guardados correctamente","ok");
 }
 
 function mostrarMsg(txt,tipo){
@@ -142,7 +139,7 @@ function mostrarMsg(txt,tipo){
   setTimeout(()=>{el.style.display="none";},4000);
 }
 
-cargarPrecios();cargarGastosFijos();
+cargarPrecios();cargarGastos();
 </script>
 </body>
 </html>

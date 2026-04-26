@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Friofrias · Performance</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#0f1117;color:#e8e8f0;font-size:14px}
+.header{background:#0f1117;border-bottom:1px solid #252836;padding:10px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.logo{font-size:16px;font-weight:500;color:#fff}.logo span{color:#4d9fff}
+.nav{display:flex;gap:0;margin-left:auto;overflow-x:auto}
+.nav a{font-size:12px;padding:0 12px;height:36px;display:flex;align-items:center;border-bottom:2px solid transparent;color:#7a7a8c;text-decoration:none;white-space:nowrap}
+.nav a.active{color:#4d9fff;border-bottom-color:#4d9fff;font-weight:500}
+.nav a:hover:not(.active){color:#ccc}
+.content{padding:16px;max-width:960px;margin:0 auto}
+.fecha-bar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.fecha-bar label{font-size:12px;color:#7a7a8c}
+.fecha-bar select{font-size:13px;padding:5px 9px;border:1px solid #252836;border-radius:7px;background:#161b27;color:#e8e8f0;outline:none}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.stat{background:#161b27;border:1px solid #252836;border-radius:10px;padding:12px 14px}
+.stat-l{font-size:11px;color:#7a7a8c;margin-bottom:4px}
+.stat-n{font-size:22px;font-weight:500}
+.stat-sub{font-size:10px;color:#555;margin-top:2px}
+.n-azul{color:#4d9fff}.n-verde{color:#3ecf8e}.n-rojo{color:#f87171}.n-amber{color:#fbbf24}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.card{background:#161b27;border:1px solid #252836;border-radius:12px;padding:14px 16px;margin-bottom:16px}
+.card-title{font-size:12px;font-weight:500;color:#7a7a8c;margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em}
+.motivo-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #252836}
+.motivo-row:last-child{border-bottom:none}
+.motivo-label{flex:1;font-size:12px;color:#e8e8f0}
+.motivo-bar-wrap{width:100px;height:4px;background:#252836;border-radius:2px;overflow:hidden}
+.motivo-bar{height:4px;border-radius:2px;background:#f87171}
+.motivo-n{font-size:12px;font-weight:500;min-width:24px;text-align:right;color:#7a7a8c}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{text-align:left;font-size:10px;font-weight:500;color:#555;padding:4px 8px;border-bottom:1px solid #252836;text-transform:uppercase;letter-spacing:.04em}
+.tbl td{padding:7px 8px;border-bottom:1px solid #1a1f2e;color:#e8e8f0}
+.tbl tr:last-child td{border-bottom:none}
+.badge{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:500}
+.b-verde{background:#0d2b1e;color:#3ecf8e}
+.b-rojo{background:#2b0d0d;color:#f87171}
+.b-amber{background:#2b1e0d;color:#fbbf24}
+.form-rebote{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px;padding:12px;background:#0f1117;border-radius:8px;border:1px solid #252836}
+.form-rebote input,.form-rebote select{font-size:12px;padding:6px 9px;border:1px solid #252836;border-radius:7px;background:#161b27;color:#e8e8f0;outline:none}
+.form-rebote input:focus{border-color:#4d9fff}
+.btn-add-rebote{font-size:12px;padding:6px 14px;border-radius:7px;border:none;background:#f87171;color:#fff;cursor:pointer}
+.empty{padding:16px;text-align:center;color:#555;font-size:12px}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="logo">Frio<span>frias</span></div>
+  <nav class="nav">
+    <a href="index.html">Logística</a>
+    <a href="finanzas.html">Finanzas</a>
+    <a href="stock.html">Stock</a>
+    <a href="clientes.html">Clientes</a>
+    <a href="performance.html" class="active">Performance</a>
+    <a href="config.html">Config</a>
+  </nav>
+</div>
+<div class="content">
+  <div class="fecha-bar">
+    <label>Periodo:</label>
+    <select id="filtro" onchange="cargar()">
+      <option value="semana">Esta semana</option>
+      <option value="mes" selected>Este mes</option>
+      <option value="total">Todo el tiempo</option>
+    </select>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="stat-l">Tasa de éxito</div><div class="stat-n n-verde" id="s-tasa">—</div><div class="stat-sub" id="s-tasa-sub"></div></div>
+    <div class="stat"><div class="stat-l">Completadas</div><div class="stat-n n-azul" id="s-ok">0</div><div class="stat-sub">entregas exitosas</div></div>
+    <div class="stat"><div class="stat-l">Fallidas / rebotes</div><div class="stat-n n-rojo" id="s-fail">0</div><div class="stat-sub" id="s-fail-sub"></div></div>
+    <div class="stat"><div class="stat-l">Reclamos</div><div class="stat-n n-amber" id="s-rec">0</div><div class="stat-sub" id="s-rec-sub"></div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Registrar entrega fallida</div>
+    <div class="form-rebote">
+      <input id="rb-cliente" type="text" placeholder="Cliente / dirección" style="flex:1;min-width:150px"/>
+      <select id="rb-motivo">
+        <option value="no_estaba">Cliente no estaba</option>
+        <option value="cancelo">Canceló en el momento</option>
+        <option value="dir_incorrecta">Dirección incorrecta</option>
+        <option value="prob_equipo">Problema con el equipo</option>
+        <option value="otro">Otro motivo</option>
+      </select>
+      <input id="rb-fecha" type="date" style="width:140px"/>
+      <button class="btn-add-rebote" onclick="registrarRebote()">Registrar</button>
+    </div>
+    <div class="grid2">
+      <div>
+        <div style="font-size:11px;color:#555;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">Motivos de rebote</div>
+        <div id="motivos-lista"></div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:#555;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">Últimas fallidas</div>
+        <table class="tbl">
+          <thead><tr><th>Cliente</th><th>Motivo</th><th>Fecha</th></tr></thead>
+          <tbody id="rebotes-tabla"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">Entregas por modelo</div>
+      <table class="tbl" id="modelos-tabla">
+        <thead><tr><th>Modelo</th><th>Vendidas</th><th>% del total</th></tr></thead>
+        <tbody id="modelos-tbody"></tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">Tendencia semanal</div>
+      <canvas id="chart-tend" height="120"></canvas>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const SU="https://ecluhrcrbcybhfucbbst.supabase.co";
+const SK="sb_publishable_1MelpVpFmU-Sv-qaZbajhA_DJDF_UQc";
+async function sb(m,t,b,q=""){
+  const r=await fetch(`${SU}/rest/v1/${t}${q}`,{method:m,headers:{"apikey":SK,"Authorization":`Bearer ${SK}`,"Content-Type":"application/json","Prefer":m==="POST"?"return=representation":"return=minimal"},body:b?JSON.stringify(b):undefined});
+  if(m==="GET"||m==="POST")return r.json();return r;
+}
+function hoy(){return new Date().toISOString().slice(0,10)}
+const MOTIVOS_LABEL={"no_estaba":"No estaba","cancelo":"Canceló","dir_incorrecta":"Dir. incorrecta","prob_equipo":"Prob. equipo","otro":"Otro"};
+let chartTend=null;
+
+function getRango(){
+  const p=document.getElementById("filtro").value;
+  const h=hoy();
+  if(p==="semana"){const d=new Date(),dow=d.getDay(),l=new Date(d);l.setDate(d.getDate()-(dow===0?6:dow-1));return{desde:l.toISOString().slice(0,10),hasta:h};}
+  if(p==="mes"){const d=new Date();return{desde:new Date(d.getFullYear(),d.getMonth(),1).toISOString().slice(0,10),hasta:h};}
+  return{desde:"2024-01-01",hasta:h};
+}
+
+async function cargar(){
+  const{desde,hasta}=getRango();
+  const [paradas,ventas,rebotes]=await Promise.all([
+    sb("GET","paradas",null,`?fecha=gte.${desde}&fecha=lte.${hasta}&order=fecha.desc`),
+    sb("GET","ventas",null,`?fecha=gte.${desde}&fecha=lte.${hasta}&order=fecha.desc`),
+    sb("GET","movimientos",null,`?categoria=eq.rebote&fecha=gte.${desde}&fecha=lte.${hasta}&order=fecha.desc`)
+  ]);
+  const p=Array.isArray(paradas)?paradas:[];
+  const v=Array.isArray(ventas)?ventas:[];
+  const rb=Array.isArray(rebotes)?rebotes:[];
+  const completadas=p.filter(x=>x.done&&x.tipo==="entrega").length;
+  const fallidas=rb.length;
+  const total=completadas+fallidas;
+  const tasa=total>0?Math.round(completadas/total*100):100;
+  const reclamos=p.filter(x=>x.tipo==="reclamo").length;
+  document.getElementById("s-tasa").textContent=tasa+"%";
+  document.getElementById("s-tasa-sub").textContent=total+" intentos";
+  document.getElementById("s-ok").textContent=completadas;
+  document.getElementById("s-fail").textContent=fallidas;
+  document.getElementById("s-rec").textContent=reclamos;
+  // Motivos
+  const motivoCnt={};
+  rb.forEach(r=>{const m=r.descripcion||"otro";motivoCnt[m]=(motivoCnt[m]||0)+1;});
+  const maxM=Math.max(...Object.values(motivoCnt),1);
+  document.getElementById("motivos-lista").innerHTML=Object.entries(motivoCnt).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="motivo-row"><div class="motivo-label">${MOTIVOS_LABEL[k]||k}</div><div class="motivo-bar-wrap"><div class="motivo-bar" style="width:${Math.round(v/maxM*100)}%"></div></div><div class="motivo-n">${v}</div></div>`).join("")||'<div class="empty">Sin rebotes registrados</div>';
+  // Tabla rebotes
+  document.getElementById("rebotes-tabla").innerHTML=rb.slice(0,8).map(r=>{const d=new Date(r.fecha+"T12:00:00");return`<tr><td>${r.cliente_nombre||r.descripcion||"—"}</td><td><span class="badge b-rojo">${MOTIVOS_LABEL[r.descripcion]||r.descripcion}</span></td><td>${d.getDate()}/${d.getMonth()+1}</td></tr>`;}).join("")||'<tr><td colspan="3" class="empty">Sin registros</td></tr>';
+  // Modelos
+  const modeloCnt={};
+  v.forEach(x=>{if(x.modelo){modeloCnt[x.modelo]=(modeloCnt[x.modelo]||0)+parseInt(x.cantidad||1);}});
+  const totalVend=Object.values(modeloCnt).reduce((s,n)=>s+n,0)||1;
+  document.getElementById("modelos-tbody").innerHTML=Object.entries(modeloCnt).sort((a,b)=>b[1]-a[1]).map(([m,n])=>`<tr><td style="font-weight:500;color:#fff">${m}</td><td style="color:#4d9fff;font-weight:500">${n}</td><td><span class="badge b-azul">${Math.round(n/totalVend*100)}%</span></td></tr>`).join("")||'<tr><td colspan="3" class="empty">Sin ventas</td></tr>';
+  // Chart tendencia
+  const semanas=[];const now=new Date();
+  for(let i=5;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i*7);semanas.push(d.toISOString().slice(0,10));}
+  const ventSem=semanas.map(s=>{const fin=new Date(s);fin.setDate(fin.getDate()+6);return v.filter(x=>x.fecha>=s&&x.fecha<=fin.toISOString().slice(0,10)).reduce((a,x)=>a+parseInt(x.cantidad||1),0);});
+  if(chartTend)chartTend.destroy();
+  const ctx=document.getElementById("chart-tend").getContext("2d");
+  chartTend=new Chart(ctx,{type:"line",data:{labels:semanas.map(s=>{const d=new Date(s+"T12:00:00");return d.getDate()+"/"+(d.getMonth()+1);}),datasets:[{label:"Ventas",data:ventSem,borderColor:"#4d9fff",backgroundColor:"rgba(77,159,255,.15)",tension:.3,fill:true,pointBackgroundColor:"#4d9fff"}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{color:"#555",font:{size:10}}},y:{ticks:{color:"#555",font:{size:10}},grid:{color:"#1a1f2e"}}}}});
+}
+
+async function registrarRebote(){
+  const cliente=document.getElementById("rb-cliente").value.trim();
+  const motivo=document.getElementById("rb-motivo").value;
+  const fecha=document.getElementById("rb-fecha").value||hoy();
+  if(!cliente)return;
+  await sb("POST","movimientos",{tipo:"gasto",descripcion:motivo,categoria:"rebote",monto:0,forma_pago:"efectivo",fecha,cliente_nombre:cliente});
+  document.getElementById("rb-cliente").value="";
+  cargar();
+}
+
+document.getElementById("rb-fecha").value=hoy();
+cargar();setInterval(cargar,60000);
+</script>
+</body>
+</html>

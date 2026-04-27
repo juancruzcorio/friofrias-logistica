@@ -500,25 +500,22 @@ async function eliminarParadaGlobal(pid){
 }
 
 async function geocodificar(dir){
-  const dirFull=dir+", Buenos Aires, Argentina";
-  // Intento 1: Nominatim
+  const dirFull=encodeURIComponent(dir+", Buenos Aires, Argentina");
+  // Intento 1: Photon (más permisivo, sin rate limit estricto)
   try{
-    const q=encodeURIComponent(dirFull);
-    const r=await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${q}&limit=1&countrycodes=ar`,{headers:{"Accept-Language":"es","User-Agent":"Friofrias/1.0"}});
-    if(r.ok){const d=await r.json();if(d&&d.length>0)return{lat:parseFloat(d[0].lat),lng:parseFloat(d[0].lon)};}
+    const r=await fetch(`https://photon.komoot.io/api/?q=${dirFull}&limit=1&lang=es`);
+    if(r.ok){const d=await r.json();if(d&&d.features&&d.features.length>0){const c=d.features[0].geometry.coordinates;if(c[1]>-40&&c[1]<-30&&c[0]>-65&&c[0]<-55)return{lat:c[1],lng:c[0]};}}
   }catch(e){}
-  // Intento 2: Nominatim con URL diferente
+  // Intento 2: Nominatim con delay
   try{
-    await new Promise(res=>setTimeout(res,800));
-    const q2=encodeURIComponent(dir+", Argentina");
-    const r2=await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${q2}&limit=1`,{headers:{"Accept-Language":"es"}});
+    await new Promise(r=>setTimeout(r,1000));
+    const r2=await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${dirFull}&limit=1&countrycodes=ar`,{headers:{"Accept-Language":"es","User-Agent":"FriofriasApp/1.0 (logistics@friofrias.com)"}});
     if(r2.ok){const d2=await r2.json();if(d2&&d2.length>0)return{lat:parseFloat(d2[0].lat),lng:parseFloat(d2[0].lon)};}
   }catch(e){}
-  // Intento 3: Photon (geocodificador alternativo)
+  // Intento 3: OpenCage gratuito
   try{
-    const q3=encodeURIComponent(dirFull);
-    const r3=await fetch(`https://photon.komoot.io/api/?q=${q3}&limit=1&lang=es&bbox=-58.9,-34.9,-58.1,-34.3`);
-    if(r3.ok){const d3=await r3.json();if(d3&&d3.features&&d3.features.length>0){const c=d3.features[0].geometry.coordinates;return{lat:c[1],lng:c[0]};}}
+    const r3=await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${dirFull}&key=6d0e711d72d74bca9bc0a56ed4e3be79&limit=1&countrycode=ar&language=es`);
+    if(r3.ok){const d3=await r3.json();if(d3&&d3.results&&d3.results.length>0){const g=d3.results[0].geometry;return{lat:g.lat,lng:g.lng};}}
   }catch(e){}
   return null;
 }
